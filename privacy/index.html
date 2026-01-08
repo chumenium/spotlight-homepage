@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>プライバシーポリシー - SpotLight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    .privacy-content {
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 2;
+    }
+    
+    .privacy-section {
+      margin-bottom: 50px;
+    }
+    
+    .privacy-section h2 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .privacy-section h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: var(--purple);
+    }
+    
+    .privacy-section p {
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    
+    .privacy-section ul {
+      margin-left: 30px;
+      margin-bottom: 15px;
+    }
+    
+    .privacy-section li {
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+    
+    .highlight {
+      background: rgba(99, 102, 241, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  
+  <header>
+    <nav>
+      <a href="https://spotlight-app.click/" class="logo">✨ SpotLight</a>
+      <ul class="nav-links">
+        <li><a href="https://spotlight-app.click/">ホーム</a></li>
+        <li><a href="/features/">機能</a></li>
+        <li><a href="/tech-stack/">技術スタック</a></li>
+        <li><a href="/badges/">バッジシステム</a></li>
+        <li><a href="/architecture/">アーキテクチャ</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="section">
+      <h1 class="section-title fade-in">プライバシーポリシー</h1>
+      
+      <div class="privacy-content fade-in">
+        <div class="privacy-section">
+          <h2>1. はじめに</h2>
+          <p>
+            SpotLight（以下「本アプリ」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めています。本プライバシーポリシーは、本アプリがどのように個人情報を収集、使用、保護するかについて説明します。
+          </p>
+          <p>
+            本アプリをご利用いただくことで、本プライバシーポリシーに同意したものとみなされます。
+          </p>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>2. 収集する情報</h2>
+          <p>本アプリは、以下の情報を収集する場合があります：</p>
+          
+          <h3>認証情報</h3>
+          <ul>
+            <li>Firebase Authentication経由で取得する情報（Googleアカウント情報、Twitterアカウント情報）</li>
+            <li>メールアドレス、表示名、プロフィール画像URL</li>
+            <li>Firebase UID（一意のユーザー識別子）</li>
+          </ul>
+          
+          <h3>アプリ利用情報</h3>
+          <ul>
+            <li>投稿内容（テキスト、画像、動画、音声）</li>
+            <li>視聴履歴</li>
+            <li>再生リスト</li>
+            <li>コメント、スポットライト、シェアなどのアクション</li>
+            <li>検索履歴</li>
+          </ul>
+          
+          <h3>デバイス情報</h3>
+          <ul>
+            <li>デバイス識別子</li>
+            <li>OS情報、アプリバージョン</li>
+            <li>FCMトークン（プッシュ通知用）</li>
+          </ul>
+          
+          <h3>位置情報</h3>
+          <p>本アプリは位置情報を収集しません。</p>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>3. 情報の利用目的</h2>
+          <p>収集した情報は、以下の目的で利用します：</p>
+          <ul>
+            <li>本アプリのサービス提供および改善</li>
+            <li>ユーザー認証およびアカウント管理</li>
+            <li>コンテンツの配信および表示</li>
+            <li>プッシュ通知の送信</li>
+            <li>不正利用の防止およびセキュリティ対策</li>
+            <li>お問い合わせへの対応</li>
+            <li>利用規約違反の調査</li>
+            <li>統計データの作成（個人を特定できない形式）</li>
+          </ul>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>4. 第三者への提供</h2>
+          <p>本アプリは、以下の場合を除き、ユーザーの個人情報を第三者に提供することはありません：</p>
+          <ul>
+            <li>ユーザーの同意がある場合</li>
+            <li>法令に基づく場合</li>
+            <li>人の生命、身体または財産の保護のために必要な場合</li>
+            <li>公的機関からの要請がある場合</li>
+          </ul>
+          
+          <h3>利用する第三者サービス</h3>
+          <ul>
+            <li><span class="highlight">Firebase Authentication</span>（Google LLC）</li>
+            <li><span class="highlight">Firebase Cloud Messaging</span>（Google LLC）</li>
+            <li><span class="highlight">Google Sign-In</span>（Google LLC）</li>
+            <li><span class="highlight">CloudFront</span>（Amazon Web Services, Inc.）</li>
+            <li><span class="highlight">S3</span>（Amazon Web Services, Inc.）</li>
+          </ul>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>5. データの保存とセキュリティ</h2>
+          
+          <h3>データの保存場所</h3>
+          <ul>
+            <li><span class="highlight">サーバー</span>: 日本国内のサーバーに保存されます</li>
+            <li><span class="highlight">ローカル</span>: デバイス内の安全なストレージに保存されます</li>
+          </ul>
+          
+          <h3>セキュリティ対策</h3>
+          <ul>
+            <li>HTTPS通信による暗号化</li>
+            <li>JWTトークンによる認証</li>
+            <li>定期的なセキュリティ監査</li>
+            <li>アクセス制御の実施</li>
+          </ul>
+          
+          <h3>データの保持期間</h3>
+          <ul>
+            <li>アカウントが削除されるまで、または法律で定められた期間</li>
+            <li>ユーザーが削除をリクエストした場合、合理的な期間内に削除します</li>
+          </ul>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>6. ユーザーの権利</h2>
+          <p>ユーザーは、以下の権利を有します：</p>
+          <ul>
+            <li>個人情報へのアクセス権</li>
+            <li>個人情報の訂正・削除権</li>
+            <li>個人情報の利用停止権</li>
+            <li>データポータビリティ権</li>
+            <li>同意の撤回権</li>
+          </ul>
+          <p>
+            これらの権利を行使する場合は、アプリ内の「フィードバック」機能またはサポートメール（support@spotlight-app.click）までご連絡ください。
+          </p>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>7. 子どものプライバシー</h2>
+          <p>本アプリは、13歳未満の子どもの個人情報を意図的に収集することはありません。</p>
+          <p>
+            13歳未満の子どもが本アプリを利用していることが判明した場合、該当するアカウントを削除し、収集した情報を削除します。
+          </p>
+          <p>
+            保護者の方は、お子様のアプリ利用について監督責任を負うものとします。
+          </p>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>8. Cookieおよびトラッキング技術</h2>
+          <p>本アプリは、以下の技術を使用する場合があります：</p>
+          <ul>
+            <li>ローカルストレージ（アプリ設定の保存）</li>
+            <li>セッション管理（認証状態の維持）</li>
+            <li>分析ツール（利用状況の把握）</li>
+          </ul>
+          <p>
+            これらは、サービス提供に必要な範囲で使用し、ユーザーのプライバシーを侵害する目的では使用しません。
+          </p>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>9. プライバシーポリシーの変更</h2>
+          <p>
+            本プライバシーポリシーは、法令の変更やサービス改善に伴い、予告なく変更される場合があります。
+          </p>
+          <p>
+            重要な変更がある場合は、アプリ内通知またはメールでお知らせします。変更後も本アプリを継続してご利用いただくことで、変更後のプライバシーポリシーに同意したものとみなされます。
+          </p>
+        </div>
+        
+        <div class="privacy-section">
+          <h2>10. お問い合わせ</h2>
+          <p>プライバシーポリシーに関するご質問やご意見がございましたら、以下の方法でお問い合わせください：</p>
+          <p><strong>【運営者情報】</strong></p>
+          <ul>
+            <li>運営者: SpotLight運営チーム</li>
+            <li>メール: support@spotlight-app.click</li>
+            <li>ウェブサイト: https://api.spotlight-app.click</li>
+          </ul>
+          <p><strong>【個人情報保護責任者】</strong></p>
+          <p>上記連絡先までご連絡ください。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <footer>
+    <div class="footer-links">
+      <a href="https://github.com/chumenium/spotlight" target="_blank">フロントエンド</a>
+      <a href="https://github.com/chumenium/spotlight-backend" target="_blank">バックエンド</a>
+      <a href="https://spotlight-app.click/">ホーム</a>
+      <a href="/terms/">利用規約</a>
+    </div>
+    <div class="footer-text">
+      © 2025 SpotLight - KCS福岡情報専門学校 卒業研究プロジェクト
+    </div>
+  </footer>
+  
+  <script src="../js/common.js"></script>
+</body>
+</html>
+

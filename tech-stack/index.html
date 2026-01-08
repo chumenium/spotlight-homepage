@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>技術スタック - SpotLight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    .tech-category {
+      margin-bottom: 80px;
+    }
+    
+    .category-title {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 40px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    
+    .tech-item {
+      background: rgba(26, 26, 46, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 15px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tech-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--purple), var(--pink));
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .tech-item:hover::before {
+      transform: scaleY(1);
+    }
+    
+    .tech-item:hover {
+      transform: translateX(10px);
+      border-color: var(--purple);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+    }
+    
+    .tech-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+    
+    .tech-description {
+      opacity: 0.8;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+    
+    .tech-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+      display: block;
+    }
+    
+    .version-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      border-radius: 12px;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  
+  <header>
+    <nav>
+      <a href="https://spotlight-app.click/" class="logo">✨ SpotLight</a>
+      <ul class="nav-links">
+        <li><a href="https://spotlight-app.click/">ホーム</a></li>
+        <li><a href="/features/">機能</a></li>
+        <li><a href="/tech-stack/" class="active">技術スタック</a></li>
+        <li><a href="/badges/">バッジシステム</a></li>
+        <li><a href="/architecture/">アーキテクチャ</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="section">
+      <h1 class="section-title fade-in">技術スタック</h1>
+      
+      <!-- フロントエンド -->
+      <div class="tech-category fade-in">
+        <h2 class="category-title">
+          <span>📱</span>
+          フロントエンド
+        </h2>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <span class="tech-icon">🎯</span>
+            <div class="tech-name">Flutter</div>
+            <div class="tech-description">
+              クロスプラットフォームモバイルアプリ開発フレームワーク。
+              iOS/Androidの両方に対応した統一的なUI/UXを実現。
+            </div>
+            <span class="version-badge">最新版</span>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🔄</span>
+            <div class="tech-name">Provider</div>
+            <div class="tech-description">
+              状態管理ライブラリ（^6.1.1）。アプリ全体の状態を効率的に管理し、
+              リアクティブなUI更新を実現。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🧭</span>
+            <div class="tech-name">GoRouter</div>
+            <div class="tech-description">
+              宣言的なルーティングライブラリ（^12.1.1）。画面遷移を型安全に管理し、
+              ディープリンクにも対応。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🌐</span>
+            <div class="tech-name">HTTP</div>
+            <div class="tech-description">
+              HTTPクライアントライブラリ（^1.1.0）。RESTful APIとの通信を
+              効率的に行い、JWT認証ヘッダー付与に対応。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🔥</span>
+            <div class="tech-name">Firebase Core</div>
+            <div class="tech-description">
+              Firebase初期化（^3.6.0）。Firebaseサービスの基盤となるライブラリ。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🔐</span>
+            <div class="tech-name">Firebase Auth</div>
+            <div class="tech-description">
+              認証機能（^5.3.1）。Google、Twitterなどのソーシャルログインに対応。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">📨</span>
+            <div class="tech-name">Firebase Messaging</div>
+            <div class="tech-description">
+              プッシュ通知（^15.1.3）。FCMによるリアルタイム通知配信。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🔍</span>
+            <div class="tech-name">Google Sign-In</div>
+            <div class="tech-description">
+              Google Sign-In統合（^6.2.1）。Googleアカウントでの認証を実現。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">💾</span>
+            <div class="tech-name">Shared Preferences</div>
+            <div class="tech-description">
+              アプリ設定の保存（^2.2.2）。JWTトークンやアプリ設定を安全に保存。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">📸</span>
+            <div class="tech-name">Image Picker</div>
+            <div class="tech-description">
+              画像・動画の選択（^1.0.5）。デバイスからメディアファイルを選択。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🎥</span>
+            <div class="tech-name">Video Player</div>
+            <div class="tech-description">
+              動画再生（^2.8.1）。投稿された動画を再生する機能を提供。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🖼️</span>
+            <div class="tech-name">Video Thumbnail</div>
+            <div class="tech-description">
+              動画サムネイル生成（^0.5.3）。動画からサムネイル画像を自動生成。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">📦</span>
+            <div class="tech-name">Video Compress</div>
+            <div class="tech-description">
+              動画圧縮（^3.1.4）。アップロード前に動画を自動圧縮。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🎵</span>
+            <div class="tech-name">Just Audio</div>
+            <div class="tech-description">
+              音声再生（^0.9.36）。音声ファイルの再生機能を提供。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🖼️</span>
+            <div class="tech-name">Image</div>
+            <div class="tech-description">
+              画像処理（^4.1.7）。リサイズ、エンコードなどの画像処理機能。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🖼️</span>
+            <div class="tech-name">Cached Network Image</div>
+            <div class="tech-description">
+              キャッシュ付きネットワーク画像（^3.3.0）。効率的な画像表示とキャッシュ管理。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">⚡</span>
+            <div class="tech-name">Fast Cached Network Image</div>
+            <div class="tech-description">
+              高速キャッシュ画像（^1.2.9）。より高速な画像キャッシュ機能。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🗂️</span>
+            <div class="tech-name">Flutter Cache Manager</div>
+            <div class="tech-description">
+              キャッシュ管理（^3.3.1）。ファイルキャッシュの管理機能。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🎬</span>
+            <div class="tech-name">Lottie</div>
+            <div class="tech-description">
+              アニメーションライブラリ（^3.1.0）。JSON形式のアニメーションを
+              軽量に再生し、リッチなUI体験を提供。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">📁</span>
+            <div class="tech-name">File Picker</div>
+            <div class="tech-description">
+              ファイル選択（^8.2.4）。デバイスからファイルを選択する機能。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🎨</span>
+            <div class="tech-name">Flutter SVG</div>
+            <div class="tech-description">
+              SVG画像表示（^2.0.9）。ベクター画像の表示に対応。
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- バックエンド -->
+      <div class="tech-category fade-in">
+        <h2 class="category-title">
+          <span>⚙️</span>
+          バックエンド
+        </h2>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <span class="tech-icon">🟢</span>
+            <div class="tech-name">Node.js</div>
+            <div class="tech-description">
+              JavaScript実行環境。非同期処理に優れ、
+              高パフォーマンスなサーバーサイドアプリケーションを構築。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🚂</span>
+            <div class="tech-name">Express</div>
+            <div class="tech-description">
+              Node.js用のWebアプリケーションフレームワーク。
+              RESTful APIの構築を簡潔に行える。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">📘</span>
+            <div class="tech-name">TypeScript</div>
+            <div class="tech-description">
+              JavaScriptに型システムを追加した言語。
+              型安全性により、バグの早期発見と保守性向上を実現。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🗄️</span>
+            <div class="tech-name">Prisma</div>
+            <div class="tech-description">
+              次世代ORM。型安全なデータベースアクセスを提供し、
+              マイグレーション管理も簡単。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🐘</span>
+            <div class="tech-name">PostgreSQL</div>
+            <div class="tech-description">
+              オープンソースのリレーショナルデータベース。
+              高信頼性と豊富な機能を備えた本番環境向けDB。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">⚡</span>
+            <div class="tech-name">Socket.io</div>
+            <div class="tech-description">
+              サーバーサイドのリアルタイム通信。
+              WebSocketベースで双方向通信を実現。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🔐</span>
+            <div class="tech-name">JWT</div>
+            <div class="tech-description">
+              JSON Web Token認証。すべてのAPIリクエストで
+              セキュアな認証を実現。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🛡️</span>
+            <div class="tech-name">Firebase Admin SDK</div>
+            <div class="tech-description">
+              Firebase認証の検証。サーバーサイドで
+              Firebase ID Tokenを検証。
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- インフラ -->
+      <div class="tech-category fade-in">
+        <h2 class="category-title">
+          <span>☁️</span>
+          インフラ・デプロイ
+        </h2>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <span class="tech-icon">🚂</span>
+            <div class="tech-name">Railway</div>
+            <div class="tech-description">
+              クラウドプラットフォーム。Node.jsアプリケーションの
+              デプロイとスケーリングを簡単に実現。PostgreSQLもホスティング。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🛡️</span>
+            <div class="tech-name">Cloudflare</div>
+            <div class="tech-description">
+              CDN・DDoS保護・SSL証明書などのサービスを提供。
+              高速で安全なコンテンツ配信を実現。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">☁️</span>
+            <div class="tech-name">AWS S3</div>
+            <div class="tech-description">
+              メディアファイルの保存。画像・動画・音声ファイルを
+              安全に保存。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🚀</span>
+            <div class="tech-name">CloudFront</div>
+            <div class="tech-description">
+              CDN（コンテンツ配信ネットワーク）。高速なメディア配信を実現。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🔥</span>
+            <div class="tech-name">Firebase</div>
+            <div class="tech-description">
+              Authentication（認証）、Cloud Messaging（プッシュ通知）などの
+              サービスを提供。
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 開発ツール -->
+      <div class="tech-category fade-in">
+        <h2 class="category-title">
+          <span>🛠️</span>
+          開発ツール・その他
+        </h2>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <span class="tech-icon">🔐</span>
+            <div class="tech-name">JWT</div>
+            <div class="tech-description">
+              JSON Web Token。安全な認証・認可を実現する
+              トークンベースの認証方式。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🔒</span>
+            <div class="tech-name">HTTPS</div>
+            <div class="tech-description">
+              暗号化通信プロトコル。すべての通信を
+              暗号化し、セキュリティを確保。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">📱</span>
+            <div class="tech-name">iOS 15.0+</div>
+            <div class="tech-description">
+              対応OSバージョン。最新のiOS機能を活用。
+            </div>
+          </div>
+          
+          <div class="tech-item">
+            <span class="tech-icon">🤖</span>
+            <div class="tech-name">Android API 21+</div>
+            <div class="tech-description">
+              対応OSバージョン。幅広いAndroidデバイスに対応。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <footer>
+    <div class="footer-links">
+      <a href="https://github.com/chumenium/spotlight" target="_blank">フロントエンド</a>
+      <a href="https://github.com/chumenium/spotlight-backend" target="_blank">バックエンド</a>
+      <a href="https://spotlight-app.click/">ホーム</a>
+      <a href="/features/">機能</a>
+      <a href="/terms/">利用規約</a>
+      <a href="/privacy/">プライバシーポリシー</a>
+    </div>
+    <div class="footer-text">
+      © 2025 SpotLight - KCS福岡情報専門学校 卒業研究プロジェクト
+    </div>
+  </footer>
+  
+  <script src="../js/common.js"></script>
+</body>
+</html>
+
