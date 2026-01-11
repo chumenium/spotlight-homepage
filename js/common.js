@@ -170,10 +170,24 @@ function loadFooter() {
   placeholder.outerHTML = footerHTML;
 }
 
-// 初期化
-document.addEventListener('DOMContentLoaded', () => {
+// ヘッダーとフッターを即座に読み込む（DOMContentLoadedを待たない）
+function initHeaderFooter() {
   loadHeader();
   loadFooter();
+  // ヘッダーとフッターが読み込まれた後にアクティブリンクを設定
+  setTimeout(setActiveLink, 0);
+}
+
+// DOMが利用可能な場合に即座に実行、そうでない場合はDOMContentLoadedを待つ
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHeaderFooter);
+} else {
+  // DOMは既に読み込まれている
+  initHeaderFooter();
+}
+
+// その他の初期化（DOMContentLoaded後に実行）
+document.addEventListener('DOMContentLoaded', () => {
   createParticles();
   handleScrollAnimation();
   initSmoothScroll();
