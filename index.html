@@ -61,6 +61,102 @@
       flex-wrap: wrap;
     }
     
+    .install-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .install-button.app-store {
+      background: linear-gradient(135deg, #007AFF, #0051D5);
+    }
+    
+    .install-button.play-store {
+      background: linear-gradient(135deg, #34A853, #0F9D58);
+    }
+    
+    .install-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .install-button:hover::before {
+      left: 100%;
+    }
+    
+    .install-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 50px rgba(99, 102, 241, 0.7);
+    }
+    
+    .install-button:active {
+      transform: translateY(-1px);
+    }
+    
+    .install-button.disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      position: relative;
+    }
+    
+    .install-button.disabled::after {
+      content: '準備中';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 4px 12px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .install-button.disabled:hover::after {
+      opacity: 1;
+    }
+    
+    .install-button.disabled:hover {
+      transform: none;
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.5);
+    }
+    
+    .install-icon {
+      font-size: 24px;
+      animation: install-pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes install-pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+    
     .scroll-indicator {
       position: absolute;
       bottom: 40px;
@@ -170,12 +266,14 @@
         <h1>あなたの輝きを<br>世界へ</h1>
         <p>固定ニックネームと動画投稿で、隠れた才能が輝く場所。<br>スポットライトを受けて、バッジランクを上げよう。</p>
         <div class="cta-buttons">
-          <a href="https://github.com/chumenium/spotlight" class="cta cta-primary" target="_blank">
-            <span>🚀 フロントエンド</span>
-          </a>
-          <a href="https://github.com/chumenium/spotlight-backend" class="cta cta-secondary" target="_blank">
-            <span>💻 バックエンド</span>
-          </a>
+          <button class="install-button app-store disabled" disabled>
+            <span class="install-icon">🍎</span>
+            <span>App Store</span>
+          </button>
+          <button class="install-button play-store disabled" disabled>
+            <span class="install-icon">🤖</span>
+            <span>Play Store</span>
+          </button>
         </div>
       </div>
       <div class="scroll-indicator"></div>
