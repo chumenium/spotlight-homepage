@@ -54,6 +54,19 @@
       margin-right: auto;
     }
     
+    .install-section-title {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 700;
+      margin-bottom: 30px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--purple), var(--pink), var(--yellow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: title-shimmer 3s ease-in-out infinite;
+      background-size: 200% 200%;
+    }
+    
     .cta-buttons {
       display: flex;
       gap: 20px;
@@ -143,6 +156,17 @@
       box-shadow: 0 10px 40px rgba(99, 102, 241, 0.5);
     }
     
+    .install-button .beta-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-left: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
     .install-icon {
       font-size: 24px;
       animation: install-pulse 2s ease-in-out infinite;
@@ -155,6 +179,27 @@
       50% {
         transform: scale(1.1);
       }
+    }
+    
+    .install-button-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .install-note {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 12px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .install-note-icon {
+      font-size: 16px;
     }
     
     .scroll-indicator {
@@ -265,11 +310,19 @@
   <div class="badge">見たことのないSNSアプリを</div>
         <h1>あなたの輝きを<br>世界へ</h1>
         <p>固定ニックネームと動画投稿で、隠れた才能が輝く場所。<br>スポットライトを受けて、バッジランクを上げよう。</p>
+        <h2 class="install-section-title">さぁ、SpotLightをはじめよう</h2>
         <div class="cta-buttons">
-          <button class="install-button app-store disabled" disabled>
-            <span class="install-icon">🍎</span>
-            <span>App Store</span>
-          </button>
+          <div class="install-button-wrapper">
+            <a href="https://testflight.apple.com/join/gbPHzDfj" class="install-button app-store" target="_blank" rel="noopener noreferrer">
+              <span class="install-icon">🍎</span>
+              <span>iOSベータ版</span>
+              <span class="beta-badge">BETA</span>
+            </a>
+            <div class="install-note">
+              <span class="install-note-icon">📱</span>
+              <span>TestFlightアプリが必要です</span>
+            </div>
+          </div>
           <button class="install-button play-store disabled" disabled>
             <span class="install-icon">🤖</span>
             <span>Play Store</span>
