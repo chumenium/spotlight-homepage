@@ -150,7 +150,27 @@ function loadFooter() {
   const basePath = getBasePath();
   const homeHref = basePath ? '../' : 'https://spotlight-app.click/';
   
+  // 広告スクリプトの読み込み（まだ読み込まれていない場合）
+  if (!document.querySelector('script[src*="adsbygoogle.js"]')) {
+    const adScript = document.createElement('script');
+    adScript.async = true;
+    adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754131556002286';
+    adScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adScript);
+  }
+  
   const footerHTML = `
+    <!-- 広告 -->
+    <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+      <!-- spotlight -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6754131556002286"
+           data-ad-slot="9042755573"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </div>
+    
     <footer>
       <div class="footer-links">
         <a href="https://github.com/chumenium/spotlight" target="_blank">フロントエンド</a>
@@ -168,6 +188,17 @@ function loadFooter() {
   `;
   
   placeholder.outerHTML = footerHTML;
+  
+  // 広告を初期化
+  setTimeout(() => {
+    if (window.adsbygoogle && !window.adsbygoogle.loaded) {
+      try {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (e) {
+        console.error('AdSense error:', e);
+      }
+    }
+  }, 100);
 }
 
 // ヘッダーとフッターを即座に読み込む（DOMContentLoadedを待たない）
