@@ -171,8 +171,10 @@
       <div class="badge-system-intro fade-in">
         <p>
           スポットライト獲得数に応じて、6段階のバッジランクが設定されています。
-          ランクが上がるごとに、より多くの特典が得られます。
-          あなたの才能が認められるほど、より高いランクを目指せます。
+          現在はスポットライト数のバッジのみ実装されていますが、
+          他の種類のバッジも開発中です。
+          アニメーションやバッジ自体は実装済みで、あなたの才能が認められるほど、
+          より高いランクを目指せます。
         </p>
       </div>
       
@@ -208,7 +210,7 @@
           <div class="badge-name">耀星</div>
           <div class="badge-description">
             才能が輝き始めています。多くの人に認められ、
-            投稿数上限も増加します。
+            成長の軌跡を記録します。
           </div>
           <div class="badge-requirements">
             <div class="badge-requirements-title">獲得条件</div>
@@ -221,7 +223,7 @@
           <div class="badge-name">烈星</div>
           <div class="badge-description">
             さらに輝きを増しています。多くの人に影響を与え、
-            表示優先度も向上します。
+            才能の証として輝いています。
           </div>
           <div class="badge-requirements">
             <div class="badge-requirements-title">獲得条件</div>
@@ -233,8 +235,8 @@
           <span class="badge-emoji">🔥</span>
           <div class="badge-name">超新星</div>
           <div class="badge-description">
-            爆発的な才能が認められています。特別な特典が
-            与えられるようになります。
+            爆発的な才能が認められています。卓越した
+            実力の証として輝いています。
           </div>
           <div class="badge-requirements">
             <div class="badge-requirements-title">獲得条件</div>
@@ -246,8 +248,8 @@
           <span class="badge-emoji">🏆</span>
           <div class="badge-name">紅巨星</div>
           <div class="badge-description">
-            卓越した才能が認められています。多くの特典が
-            解放されます。
+            卓越した才能が認められています。高い実力の
+            証として輝いています。
           </div>
           <div class="badge-requirements">
             <div class="badge-requirements-title">獲得条件</div>
@@ -259,8 +261,8 @@
           <span class="badge-emoji">⚡</span>
           <div class="badge-name">白煌星</div>
           <div class="badge-description">
-            最高レベルの才能が認められています。ほぼすべての
-            特典が利用可能です。
+            最高レベルの才能が認められています。最高の
+            実力の証として輝いています。
           </div>
           <div class="badge-requirements">
             <div class="badge-requirements-title">獲得条件</div>
@@ -273,7 +275,7 @@
           <div class="badge-name">星王</div>
           <div class="badge-description">
             伝説の存在。最高の才能が認められた証。
-            すべての特典が最大限に解放されます。
+            全ての実力の証として輝いています。
           </div>
           <div class="badge-requirements">
             <div class="badge-requirements-title">獲得条件</div>
@@ -283,32 +285,23 @@
       </div>
       
       <div class="badge-benefits fade-in">
-        <h2 class="section-title">ランクアップの特典</h2>
+        <h2 class="section-title">現在実装されている機能</h2>
         <div class="benefits-grid">
-          <div class="benefit-item">
-            <div class="benefit-icon">📝</div>
-            <div class="benefit-title">投稿数上限の増加</div>
-            <div class="benefit-description">
-              ランクが上がるごとに、1日の投稿数上限が増加します。
-              微星: 3投稿/日 → 星王: 無制限
-            </div>
-          </div>
-          
-          <div class="benefit-item">
-            <div class="benefit-icon">📊</div>
-            <div class="benefit-title">表示優先度の向上</div>
-            <div class="benefit-description">
-              フィードアルゴリズムで、より多くの人に
-              あなたの投稿が表示されるようになります。
-            </div>
-          </div>
-          
           <div class="benefit-item">
             <div class="benefit-icon">🏆</div>
             <div class="benefit-title">バッジの表示</div>
             <div class="benefit-description">
               プロフィールや投稿に、あなたのランクバッジが
               表示され、一目で実力がわかります。
+            </div>
+          </div>
+          
+          <div class="benefit-item">
+            <div class="benefit-icon">✨</div>
+            <div class="benefit-title">バッジのアニメーション</div>
+            <div class="benefit-description">
+              バッジには美しいアニメーションが実装されており、
+              視覚的に楽しめる演出が含まれています。
             </div>
           </div>
           
@@ -322,27 +315,23 @@
           </div>
         </div>
         
-        <div class="fade-in" style="margin-top: 60px; text-align: center;">
-          <h3 style="font-size: 24px; margin-bottom: 30px; color: var(--purple);">投稿数上限一覧</h3>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>ランク</th>
-                  <th>1日の投稿数上限</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>微星</td><td>3投稿</td></tr>
-                <tr><td>新星</td><td>5投稿</td></tr>
-                <tr><td>耀星</td><td>7投稿</td></tr>
-                <tr><td>烈星</td><td>10投稿</td></tr>
-                <tr><td>超新星</td><td>15投稿</td></tr>
-                <tr><td>紅巨星</td><td>20投稿</td></tr>
-                <tr><td>白煌星</td><td>30投稿</td></tr>
-                <tr><td>星王</td><td>無制限</td></tr>
-              </tbody>
-            </table>
+        <div class="fade-in" style="margin-top: 60px; padding: 30px; background: rgba(99, 102, 241, 0.1); border-radius: 20px; border: 1px solid rgba(99, 102, 241, 0.3);">
+          <h3 style="font-size: 24px; margin-bottom: 20px; color: var(--purple); text-align: center;">今後の実装予定</h3>
+          <p style="text-align: center; line-height: 2; opacity: 0.9; margin-bottom: 20px;">
+            現在、他の種類のバッジも開発中です。また、バッジに応じた特典機能も
+            今後実装予定です。お楽しみに！
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px;">
+            <div style="text-align: center; padding: 20px; background: rgba(26, 26, 46, 0.6); border-radius: 15px;">
+              <div style="font-size: 32px; margin-bottom: 10px;">🚧</div>
+              <div style="font-weight: 700; color: var(--purple); margin-bottom: 8px;">バッジの種類拡充</div>
+              <div style="font-size: 14px; opacity: 0.8;">開発中</div>
+            </div>
+            <div style="text-align: center; padding: 20px; background: rgba(26, 26, 46, 0.6); border-radius: 15px;">
+              <div style="font-size: 32px; margin-bottom: 10px;">🎁</div>
+              <div style="font-weight: 700; color: var(--purple); margin-bottom: 8px;">バッジ特典システム</div>
+              <div style="font-size: 14px; opacity: 0.8;">今後実装予定</div>
+            </div>
           </div>
         </div>
       </div>
