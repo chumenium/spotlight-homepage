@@ -150,15 +150,6 @@ function loadFooter() {
   const basePath = getBasePath();
   const homeHref = basePath ? '../' : 'https://spotlight-app.click/';
   
-  // 広告スクリプトの読み込み（まだ読み込まれていない場合）
-  if (!document.querySelector('script[src*="adsbygoogle.js"]')) {
-    const adScript = document.createElement('script');
-    adScript.async = true;
-    adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754131556002286';
-    adScript.crossOrigin = 'anonymous';
-    document.head.appendChild(adScript);
-  }
-  
   const footerHTML = `
     <!-- 広告 -->
     <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
@@ -191,12 +182,10 @@ function loadFooter() {
   
   // 広告を初期化
   setTimeout(() => {
-    if (window.adsbygoogle && !window.adsbygoogle.loaded) {
-      try {
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (e) {
-        console.error('AdSense error:', e);
-      }
+    try {
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error('AdSense error:', e);
     }
   }, 100);
 }
