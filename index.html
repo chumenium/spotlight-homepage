@@ -9,6 +9,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754131556002286"
        crossorigin="anonymous"></script>
   <script src="js/common.js" defer></script>
+  <script src="js/notices.js" defer></script>
   <style>
     .hero {
       min-height: 100vh;
@@ -204,6 +205,52 @@
       font-size: 16px;
     }
     
+    .notice-list {
+      display: grid;
+      gap: 16px;
+    }
+    
+    .notice-item {
+      background: rgba(26, 26, 46, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: grid;
+      gap: 10px;
+    }
+    
+    .notice-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    
+    .notice-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+    
+    .notice-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    
+    .notice-body {
+      font-size: 15px;
+      line-height: 1.8;
+      opacity: 0.9;
+      white-space: pre-wrap;
+    }
+    
     .scroll-indicator {
       position: absolute;
       bottom: 40px;
@@ -311,8 +358,8 @@
       <div class="hero-content">
   <div class="badge">見たことのないSNSアプリを</div>
         <h1>あなたの輝きを<br>世界へ</h1>
-        <p>固定ニックネームと動画投稿で、隠れた才能が輝く場所。<br>スポットライトを受けて、バッジランクを上げよう。</p>
-        <h2 class="install-section-title">さぁ、SpotLightをはじめよう</h2>
+        <p>あなたらしい投稿で、隠れた才能が輝く場所。<br>スポットライトを受けて、バッジランクを上げよう。</p>
+        <h2 class="install-section-title">さぁ、Spotlightをはじめよう</h2>
         <div class="cta-buttons">
           <div class="install-button-wrapper">
             <a href="https://testflight.apple.com/join/gbPHzDfj" class="install-button app-store" target="_blank" rel="noopener noreferrer">
@@ -339,6 +386,16 @@
         </div>
       </div>
       <div class="scroll-indicator"></div>
+    </section>
+    
+    <!-- お知らせセクション -->
+    <section class="section" id="notices">
+      <h2 class="section-title fade-in">お知らせ</h2>
+      <div class="notice-list" id="noticeList">
+        <div class="notice-item fade-in">
+          <div class="notice-title">読み込み中...</div>
+        </div>
+      </div>
     </section>
     
     <!-- 機能セクション -->

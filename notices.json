@@ -1,0 +1,16 @@
+{
+  "notices": [
+    {
+      "date": "2026-01-24",
+      "tag": "UPDATE",
+      "title": "Android版APKを公開しました",
+      "body": "ホーム画面のAndroidボタンからAPKをダウンロードできます。"
+    },
+    {
+      "date": "2026-01-20",
+      "tag": "INFO",
+      "title": "iOSベータ版配布中",
+      "body": "TestFlightからiOSベータ版を配布しています。"
+    }
+  ]
+}
