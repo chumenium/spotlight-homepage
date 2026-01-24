@@ -11,14 +11,17 @@
       max-width: 960px;
       margin: 0 auto;
       padding: 120px 20px 80px;
+      position: relative;
+      z-index: 1;
     }
     
     .admin-card {
-      background: rgba(26, 26, 46, 0.6);
-      border: 1px solid rgba(99, 102, 241, 0.2);
+      background: rgba(26, 26, 46, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.35);
       border-radius: 20px;
       padding: 28px;
       margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(2, 6, 23, 0.6);
     }
     
     .admin-form {
@@ -30,6 +33,7 @@
       font-weight: 700;
       display: block;
       margin-bottom: 6px;
+      color: var(--white);
     }
     
     .admin-form input,
@@ -37,11 +41,19 @@
     .admin-form textarea {
       width: 100%;
       border-radius: 12px;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      background: rgba(5, 8, 22, 0.7);
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      background: rgba(5, 8, 22, 0.9);
       color: var(--white);
       padding: 12px 14px;
       font-size: 14px;
+      outline: none;
+    }
+    
+    .admin-form input:focus,
+    .admin-form select:focus,
+    .admin-form textarea:focus {
+      border-color: rgba(236, 72, 153, 0.8);
+      box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
     }
     
     .admin-actions {
@@ -63,6 +75,7 @@
     .admin-button.secondary {
       background: rgba(99, 102, 241, 0.2);
       border: 1px solid rgba(99, 102, 241, 0.4);
+      color: var(--white);
     }
     
     .notice-preview {
@@ -71,8 +84,8 @@
     }
     
     .notice-item {
-      background: rgba(26, 26, 46, 0.6);
-      border: 1px solid rgba(99, 102, 241, 0.2);
+      background: rgba(26, 26, 46, 0.75);
+      border: 1px solid rgba(99, 102, 241, 0.25);
       border-radius: 16px;
       padding: 16px 20px;
     }
@@ -95,7 +108,6 @@
 </head>
 <body>
   <script>
-    const adminKey = 'toudai2026';
     const sessionKey = 'spotlight_notice_admin_auth';
     const hasAuth = sessionStorage.getItem(sessionKey) === 'ok';
     if (!hasAuth) {
@@ -118,6 +130,7 @@
     <h1 class="section-title fade-in">お知らせ管理</h1>
     <p class="fade-in" style="opacity: 0.8; margin-bottom: 30px;">
       ここで作成したJSONをダウンロードして、`notices.json`を置き換えると反映されます。
+      既存のお知らせは自動で読み込み、履歴が残るように結合します。
     </p>
 
     <div class="admin-card fade-in">
@@ -145,7 +158,7 @@
         </div>
         <div class="admin-actions">
           <button type="submit" class="admin-button">お知らせを追加</button>
-          <button type="button" class="admin-button secondary" id="clearNotices">すべて削除</button>
+          <button type="button" class="admin-button secondary" id="clearNotices">すべて削除(注意)</button>
           <button type="button" class="admin-button secondary" id="downloadJson">JSONをダウンロード</button>
         </div>
       </form>
@@ -171,6 +184,37 @@
 
     function saveNotices(items) {
       localStorage.setItem(storageKey, JSON.stringify(items));
+    }
+
+    function makeKey(item) {
+      return `${item.date || ''}|${item.tag || ''}|${item.title || ''}`;
+    }
+
+    function mergeNotices(primary, secondary) {
+      const merged = [];
+      const seen = new Set();
+      [...primary, ...secondary].forEach(item => {
+        const key = makeKey(item);
+        if (!seen.has(key)) {
+          seen.add(key);
+          merged.push(item);
+        }
+      });
+      return merged;
+    }
+
+    async function loadRemoteNotices() {
+      try {
+        const response = await fetch('notices.json', { cache: 'no-store' });
+        if (!response.ok) {
+          return [];
+        }
+        const data = await response.json();
+        return Array.isArray(data.notices) ? data.notices : [];
+      } catch (error) {
+        console.warn('Failed to load notices.json', error);
+        return [];
+      }
     }
 
     function renderPreview(items) {
@@ -219,6 +263,8 @@
     });
 
     clearButton.addEventListener('click', () => {
+      const ok = window.confirm('すべてのお知らせ履歴を削除します。よろしいですか？');
+      if (!ok) return;
       saveNotices([]);
       renderPreview([]);
     });
@@ -227,7 +273,13 @@
       downloadJson(loadNotices());
     });
 
-    renderPreview(loadNotices());
+    (async () => {
+      const localItems = loadNotices();
+      const remoteItems = await loadRemoteNotices();
+      const merged = mergeNotices(localItems, remoteItems);
+      saveNotices(merged);
+      renderPreview(merged);
+    })();
   </script>
 </body>
 </html>
