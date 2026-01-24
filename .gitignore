@@ -46,7 +46,3 @@ yarn.lock
 
 # APKファイル（サーバーに直接配置）
 download/*.apk
-
-# APKファイル（サーバーに直接配置）
-download/*.apk
-/download/
