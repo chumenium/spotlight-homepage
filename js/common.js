@@ -128,13 +128,16 @@ function loadHeader() {
     <header>
       <nav>
         <a href="${homeHref}" class="logo">✨ SpotLight</a>
-        <ul class="nav-links">
-          <li><a href="${homeHref}"${isHome ? ' class="active"' : ''}>ホーム</a></li>
-          <li><a href="${featuresHref}"${isFeatures ? ' class="active"' : ''}>機能</a></li>
-          <li><a href="${techStackHref}"${isTechStack ? ' class="active"' : ''}>技術スタック</a></li>
-          <li><a href="${badgesHref}"${isBadges ? ' class="active"' : ''}>バッジシステム</a></li>
-          <li><a href="${architectureHref}"${isArchitecture ? ' class="active"' : ''}>アーキテクチャ</a></li>
-        </ul>
+        <div class="nav-right">
+          <ul class="nav-links">
+            <li><a href="${homeHref}"${isHome ? ' class="active"' : ''}>ホーム</a></li>
+            <li><a href="${featuresHref}"${isFeatures ? ' class="active"' : ''}>機能</a></li>
+            <li><a href="${techStackHref}"${isTechStack ? ' class="active"' : ''}>技術スタック</a></li>
+            <li><a href="${badgesHref}"${isBadges ? ' class="active"' : ''}>バッジシステム</a></li>
+            <li><a href="${architectureHref}"${isArchitecture ? ' class="active"' : ''}>アーキテクチャ</a></li>
+          </ul>
+          <div id="auth-nav"></div>
+        </div>
       </nav>
     </header>
   `;
