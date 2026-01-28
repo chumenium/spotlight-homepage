@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>マイページ - SpotLight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/common.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js" defer></script>
+  <script src="js/auth.js" defer></script>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  <div id="header-placeholder"></div>
+
+  <main class="mypage">
+    <div class="mypage-card">
+      <div class="mypage-header">
+        <img id="mypageAvatar" class="mypage-avatar" src="" alt="">
+        <div>
+          <div id="mypageName" class="mypage-title">読み込み中...</div>
+          <div id="mypageBio" class="mypage-sub"></div>
+        </div>
+      </div>
+      <div class="mypage-actions">
+        <button type="button" id="btnDeleteAll" class="secondary-btn">自分の投稿をすべて削除</button>
+        <button type="button" id="btnDeleteAccount" class="danger-btn">アカウントを削除</button>
+      </div>
+      <div id="mypageStatus" class="mypage-status"></div>
+    </div>
+
+    <div class="mypage-card">
+      <h2 style="margin-bottom: 12px;">自分の投稿</h2>
+      <div id="contentList" class="content-list"></div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    (function() {
+      var jwt = null;
+      var contents = [];
+
+      function setStatus(msg) {
+        var el = document.getElementById('mypageStatus');
+        if (el) el.textContent = msg || '';
+      }
+
+      function renderProfile(user) {
+        var nameEl = document.getElementById('mypageName');
+        var bioEl = document.getElementById('mypageBio');
+        var avatarEl = document.getElementById('mypageAvatar');
+        if (nameEl) nameEl.textContent = user.username || 'ユーザー';
+        if (bioEl) bioEl.textContent = user.bio || '';
+        if (avatarEl) {
+          if (user.iconimgpath) {
+            avatarEl.src = user.iconimgpath;
+            avatarEl.alt = user.username || '';
+          } else {
+            avatarEl.style.display = 'none';
+          }
+        }
+      }
+
+      function renderContents(list) {
+        var container = document.getElementById('contentList');
+        if (!container) return;
+        container.innerHTML = '';
+        if (!list || list.length === 0) {
+          container.innerHTML = '<div class="mypage-sub">投稿はありません。</div>';
+          return;
+        }
+        list.forEach(function(item) {
+          var el = document.createElement('div');
+          el.className = 'content-item';
+          var thumb = item.thumbnailpath ? '<img class="content-thumb" src="' + item.thumbnailpath + '" alt="">' : '<div class="content-thumb"></div>';
+          el.innerHTML = thumb +
+            '<div>' +
+            '<div class="content-title">' + (item.title || '無題') + '</div>' +
+            '<div class="content-meta">ID: ' + item.contentID + ' / 再生: ' + (item.playnum || 0) + ' / SP: ' + (item.spotlightnum || 0) + '</div>' +
+            '</div>' +
+            '<button class="content-delete" data-id="' + item.contentID + '">削除</button>';
+          container.appendChild(el);
+        });
+        container.querySelectorAll('.content-delete').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var id = parseInt(btn.getAttribute('data-id'), 10);
+            deleteSingle(id);
+          });
+        });
+      }
+
+      function deleteSingle(contentId) {
+        if (!confirm('この投稿を削除します。よろしいですか？')) return;
+        setStatus('削除中...');
+        window.SpotlightApi.deleteContent(jwt, contentId).then(function() {
+          contents = contents.filter(function(c) { return c.contentID !== contentId; });
+          renderContents(contents);
+          setStatus('投稿を削除しました。');
+        }).catch(function(e) {
+          setStatus(e.message || '削除に失敗しました。');
+        });
+      }
+
+      function deleteAll() {
+        if (!confirm('自分の投稿をすべて削除します。よろしいですか？')) return;
+        if (!confirm('本当に削除します。取り消しできません。')) return;
+        if (!contents || contents.length === 0) {
+          setStatus('削除対象の投稿がありません。');
+          return;
+        }
+        var total = contents.length;
+        var idx = 0;
+        setStatus('全削除中... 0 / ' + total);
+        var chain = Promise.resolve();
+        contents.forEach(function(item) {
+          chain = chain.then(function() {
+            idx++;
+            setStatus('全削除中... ' + idx + ' / ' + total);
+            return window.SpotlightApi.deleteContent(jwt, item.contentID);
+          });
+        });
+        chain.then(function() {
+          contents = [];
+          renderContents(contents);
+          setStatus('すべての投稿を削除しました。');
+        }).catch(function(e) {
+          setStatus(e.message || '一部削除に失敗しました。');
+        });
+      }
+
+      function deleteAccount() {
+        if (!confirm('アカウントを削除します。よろしいですか？')) return;
+        if (!confirm('本当に削除します。投稿もすべて削除されます。')) return;
+        setStatus('アカウント削除中...');
+        window.SpotlightApi.deleteAccount(jwt).then(function() {
+          return window.SpotlightAuth.signOut();
+        }).catch(function(e) {
+          console.warn('signOut failed:', e);
+        }).then(function() {
+          window.location.href = 'https://spotlight-app.click/';
+        }).catch(function(e) {
+          setStatus(e.message || 'アカウント削除に失敗しました。');
+        });
+      }
+
+      function requireLogin() {
+        window.location.href = '/login.html';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.SpotlightAuthEnvError) {
+          setStatus(window.SpotlightAuthEnvError);
+          return;
+        }
+        var auth = window.SpotlightAuth && window.SpotlightAuth.getAuth();
+        if (!auth || !auth.currentUser) {
+          requireLogin();
+          return;
+        }
+        window.SpotlightAuth.getIdToken().then(function(idToken) {
+          return window.SpotlightApi.fetchJwt(idToken);
+        }).then(function(j) {
+          jwt = j;
+          return window.SpotlightApi.fetchUserData(jwt);
+        }).then(function(user) {
+          renderProfile(user);
+          return window.SpotlightApi.fetchUserContents(jwt);
+        }).then(function(list) {
+          contents = list || [];
+          renderContents(contents);
+          setStatus('');
+        }).catch(function(e) {
+          setStatus(e.message || 'データ取得に失敗しました。');
+        });
+
+        var delAllBtn = document.getElementById('btnDeleteAll');
+        var delAccountBtn = document.getElementById('btnDeleteAccount');
+        if (delAllBtn) delAllBtn.addEventListener('click', deleteAll);
+        if (delAccountBtn) delAccountBtn.addEventListener('click', deleteAccount);
+      });
+    })();
+  </script>
+</body>
+</html>

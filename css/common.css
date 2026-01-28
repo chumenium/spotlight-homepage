@@ -240,6 +240,10 @@ nav {
   gap: 8px;
   font-size: 14px;
   color: var(--light-gray);
+  text-decoration: none;
+}
+.auth-user:hover {
+  color: var(--white);
 }
 .auth-avatar {
   width: 28px;
@@ -353,6 +357,121 @@ nav {
 }
 .auth-footer a:hover {
   text-decoration: underline;
+}
+
+/* マイページ */
+.mypage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 120px 20px 80px;
+}
+.mypage-card {
+  background: rgba(26, 26, 46, 0.75);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.mypage-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.mypage-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.mypage-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+.mypage-sub {
+  color: var(--light-gray);
+  font-size: 14px;
+}
+.mypage-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+.danger-btn {
+  background: rgba(239, 68, 68, 0.9);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.danger-btn:hover {
+  background: rgba(239, 68, 68, 1);
+}
+.secondary-btn {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.content-list {
+  display: grid;
+  gap: 12px;
+}
+.content-item {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 14px;
+  background: rgba(5, 8, 22, 0.6);
+}
+.content-thumb {
+  width: 120px;
+  height: 68px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
+}
+.content-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.content-meta {
+  color: var(--light-gray);
+  font-size: 12px;
+}
+.content-delete {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  color: #fca5a5;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.content-delete:hover {
+  background: rgba(239, 68, 68, 0.12);
+}
+.mypage-status {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--light-gray);
+}
+
+@media (max-width: 768px) {
+  .content-item {
+    grid-template-columns: 1fr;
+  }
+  .content-thumb {
+    width: 100%;
+    height: 160px;
+  }
 }
 
 /* メインコンテンツ */
