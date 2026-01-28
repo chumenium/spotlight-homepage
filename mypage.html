@@ -153,34 +153,36 @@
         });
       }
 
-      function requireLogin() {
-        window.location.href = '/login.html';
-      }
-
       document.addEventListener('DOMContentLoaded', function() {
         if (window.SpotlightAuthEnvError) {
           setStatus(window.SpotlightAuthEnvError);
           return;
         }
         var auth = window.SpotlightAuth && window.SpotlightAuth.getAuth();
-        if (!auth || !auth.currentUser) {
-          requireLogin();
+        if (!auth) {
+          window.location.href = '/login.html';
           return;
         }
-        window.SpotlightAuth.getIdToken().then(function(idToken) {
-          return window.SpotlightApi.fetchJwt(idToken);
-        }).then(function(j) {
-          jwt = j;
-          return window.SpotlightApi.fetchUserData(jwt);
-        }).then(function(user) {
-          renderProfile(user);
-          return window.SpotlightApi.fetchUserContents(jwt);
-        }).then(function(list) {
-          contents = list || [];
-          renderContents(contents);
-          setStatus('');
-        }).catch(function(e) {
-          setStatus(e.message || 'データ取得に失敗しました。');
+        auth.onAuthStateChanged(function(user) {
+          if (!user) {
+            window.location.href = '/login.html';
+            return;
+          }
+          window.SpotlightAuth.getIdToken().then(function(idToken) {
+            return window.SpotlightApi.fetchJwt(idToken);
+          }).then(function(j) {
+            jwt = j;
+            return window.SpotlightApi.fetchUserData(jwt);
+          }).then(function(appUser) {
+            renderProfile(appUser);
+            return window.SpotlightApi.fetchUserContents(jwt);
+          }).then(function(list) {
+            contents = list || [];
+            renderContents(contents);
+            setStatus('');
+          }).catch(function(e) {
+            setStatus(e.message || 'データ取得に失敗しました。');
+          });
         });
 
         var delAllBtn = document.getElementById('btnDeleteAll');
