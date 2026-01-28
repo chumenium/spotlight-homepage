@@ -128,13 +128,16 @@ function loadHeader() {
     <header>
       <nav>
         <a href="${homeHref}" class="logo">✨ SpotLight</a>
-        <ul class="nav-links">
-          <li><a href="${homeHref}"${isHome ? ' class="active"' : ''}>ホーム</a></li>
-          <li><a href="${featuresHref}"${isFeatures ? ' class="active"' : ''}>機能</a></li>
-          <li><a href="${techStackHref}"${isTechStack ? ' class="active"' : ''}>技術スタック</a></li>
-          <li><a href="${badgesHref}"${isBadges ? ' class="active"' : ''}>バッジシステム</a></li>
-          <li><a href="${architectureHref}"${isArchitecture ? ' class="active"' : ''}>アーキテクチャ</a></li>
-        </ul>
+        <div class="nav-right">
+          <ul class="nav-links">
+            <li><a href="${homeHref}"${isHome ? ' class="active"' : ''}>ホーム</a></li>
+            <li><a href="${featuresHref}"${isFeatures ? ' class="active"' : ''}>機能</a></li>
+            <li><a href="${techStackHref}"${isTechStack ? ' class="active"' : ''}>技術スタック</a></li>
+            <li><a href="${badgesHref}"${isBadges ? ' class="active"' : ''}>バッジシステム</a></li>
+            <li><a href="${architectureHref}"${isArchitecture ? ' class="active"' : ''}>アーキテクチャ</a></li>
+          </ul>
+          <div id="auth-nav"></div>
+        </div>
       </nav>
     </header>
   `;
@@ -180,14 +183,42 @@ function loadFooter() {
   
   placeholder.outerHTML = footerHTML;
   
-  // 広告を初期化
-  setTimeout(() => {
-    try {
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error('AdSense error:', e);
+  // 広告を初期化（AdSenseスクリプトの読み込みを待つ）
+  function initAdSense() {
+    if (window.adsbygoogle) {
+      try {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (e) {
+        console.error('AdSense error:', e);
+      }
+    } else {
+      // AdSenseスクリプトがまだ読み込まれていない場合、少し待って再試行（最大5秒）
+      let retryCount = 0;
+      const maxRetries = 25; // 200ms × 25 = 5秒
+      const retryInterval = setInterval(() => {
+        retryCount++;
+        if (window.adsbygoogle) {
+          try {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          } catch (e) {
+            console.error('AdSense error:', e);
+          }
+          clearInterval(retryInterval);
+        } else if (retryCount >= maxRetries) {
+          console.warn('AdSense script not loaded after 5 seconds');
+          clearInterval(retryInterval);
+        }
+      }, 200);
     }
-  }, 100);
+  }
+  
+  // DOMContentLoaded後に初期化を試みる
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdSense);
+  } else {
+    // DOMは既に読み込まれている
+    setTimeout(initAdSense, 100);
+  }
 }
 
 // ヘッダーとフッターを即座に読み込む（DOMContentLoadedを待たない）
