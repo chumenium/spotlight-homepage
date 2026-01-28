@@ -113,6 +113,7 @@
         </div>
         <div class="admin-actions">
           <button type="submit" class="admin-button">通知を送信</button>
+          <button type="button" class="admin-button secondary" id="setAllTarget">全ユーザーにする</button>
         </div>
         <div class="admin-note">targetuid が "all" の場合は全ユーザーへ送信されます。</div>
         <div id="adminStatus" class="admin-status"></div>
@@ -130,6 +131,7 @@
       var targetSelect = document.getElementById('noticeTarget');
       var targetWrap = document.getElementById('targetUidWrap');
       var targetInput = document.getElementById('targetUid');
+      var setAllBtn = document.getElementById('setAllTarget');
 
       function setStatus(msg, isError) {
         if (!statusEl) return;
@@ -160,6 +162,12 @@
 
         toggleTargetInput();
         targetSelect.addEventListener('change', toggleTargetInput);
+        if (setAllBtn) {
+          setAllBtn.addEventListener('click', function() {
+            targetSelect.value = 'all';
+            toggleTargetInput();
+          });
+        }
 
         var auth = window.SpotlightAuth && window.SpotlightAuth.getAuth();
         if (!auth) {
