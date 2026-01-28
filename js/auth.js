@@ -50,7 +50,7 @@
             window.SpotlightApi.clearSession();
           }
           syncBackendSession(user);
-          if (user && /^\/(login|signup)(\/|\.html)?$/.test(window.location.pathname)) {
+          if (user && /^(\/(login|signup))(\/|\/index\.html)?$/.test(window.location.pathname)) {
             window.location.href = '/';
           }
         });
@@ -71,14 +71,19 @@
       var name = appUser && appUser.username ? appUser.username : 'ユーザー';
       var icon = appUser && appUser.iconimgpath ? appUser.iconimgpath : null;
       var photo = icon ? '<img src="' + escapeHtml(icon) + '" alt="" class="auth-avatar">' : '';
-      var myHref = base + 'mypage.html';
+      var myHref = base + 'mypage/';
+      var adminLink = '';
+      if (appUser && appUser.admin) {
+        adminLink = '<a href="' + base + 'notice-admin/" class="auth-link">管理者</a>';
+      }
       el.innerHTML = '<a href="' + myHref + '" class="auth-user">' + photo + '<span class="auth-name">' + escapeHtml(name) + '</span></a>' +
+        adminLink +
         '<a href="#" class="auth-link" data-action="logout">ログアウト</a>';
       var logoutBtn = el.querySelector('[data-action="logout"]');
       if (logoutBtn) logoutBtn.addEventListener('click', function(e) { e.preventDefault(); signOut(); });
     } else {
-      el.innerHTML = '<a href="' + base + 'login.html" class="auth-link">ログイン</a>' +
-        '<a href="' + base + 'signup.html" class="auth-link auth-link-primary">新規登録</a>';
+      el.innerHTML = '<a href="' + base + 'login/" class="auth-link">ログイン</a>' +
+        '<a href="' + base + 'signup/" class="auth-link auth-link-primary">新規登録</a>';
     }
   }
 
@@ -134,7 +139,6 @@
     return auth ? auth.currentUser : null;
   }
 
-  // グローバルに公開
   window.SpotlightAuth = {
     init: initFirebase,
     signInWithGoogle: signInWithGoogle,

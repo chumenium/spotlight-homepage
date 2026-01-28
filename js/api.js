@@ -116,6 +116,16 @@
       });
   }
 
+  function sendAdminNotification(jwt, payload) {
+    return postJson('/api/admin/adminnotification', payload, jwt)
+      .then(function(res) {
+        if (res.status === 200 && res.data && res.data.status === 'success') {
+          return true;
+        }
+        throw new Error(res.data && res.data.message || '通知送信に失敗しました');
+      });
+  }
+
   function clearSession() {
     clearJwt();
     clearCachedUser();
@@ -135,6 +145,7 @@
     fetchUserContents: fetchUserContents,
     deleteContent: deleteContent,
     deleteAccount: deleteAccount,
+    sendAdminNotification: sendAdminNotification,
     clearSession: clearSession
   };
 })();
