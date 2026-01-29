@@ -4,7 +4,7 @@
 (function() {
   'use strict';
 
-  var API_BASE = 'https://spotlight-app.click';
+  var API_BASE = 'https://api.spotlight-app.click';
   var JWT_KEY = 'spotlight_jwt';
   var USER_KEY = 'spotlight_user';
 
