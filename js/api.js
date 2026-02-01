@@ -1,5 +1,5 @@
 /**
- * SpotLight Backend API client
+ * Spotlight Backend API client
  */
 (function() {
   'use strict';
