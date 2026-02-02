@@ -1,4 +1,4 @@
-const NOTICE_ENDPOINT = 'notices.json';
+const NOTICE_ENDPOINT = './notices.json';
 const NOTICE_LIST_ID = 'noticeList';
 
 function escapeHtml(value) {
