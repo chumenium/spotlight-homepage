@@ -127,7 +127,7 @@ function loadHeader() {
   const headerHTML = `
     <header>
       <nav>
-        <a href="${homeHref}" class="logo">✨ SpotLight</a>
+        <a href="${homeHref}" class="logo">✨ スポットライト</a>
         <div class="nav-right">
           <ul class="nav-links">
             <li><a href="${homeHref}"${isHome ? ' class="active"' : ''}>ホーム</a></li>
@@ -176,7 +176,7 @@ function loadFooter() {
         <a href="${basePath}privacy/">プライバシーポリシー</a>
       </div>
       <div class="footer-text">
-        © 2025 SpotLight
+        © 2025 スポットライト
       </div>
     </footer>
   `;

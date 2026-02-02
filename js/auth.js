@@ -46,34 +46,44 @@
       var auth = getAuth();
       if (auth) {
         auth.onAuthStateChanged(function(user) {
-          updateAuthNav(user);
-          if (user && /^\/(login|signup)(\/|\.html)?$/.test(window.location.pathname)) {
+          if (!user && window.SpotlightApi) {
+            window.SpotlightApi.clearSession();
+          }
+          syncBackendSession(user);
+          if (user && /^(\/(login|signup))(\/|\/index\.html)?$/.test(window.location.pathname)) {
             window.location.href = '/';
           }
         });
-        updateAuthNav(auth.currentUser);
+        syncBackendSession(auth.currentUser);
       }
     } catch (e) {
       console.warn('Firebase init:', e);
     }
   }
 
-  function updateAuthNav(user) {
+  function updateAuthNav(user, appUser) {
     var el = document.getElementById('auth-nav');
     if (!el) return;
     var p = window.location.pathname;
     var parts = p.split('/').filter(function(x) { return x && x !== 'index.html'; });
     var base = parts.length === 0 ? '' : Array(parts.length + 1).join('../');
     if (user) {
-      var name = user.displayName || user.email || 'ユーザー';
-      var photo = user.photoURL ? '<img src="' + escapeHtml(user.photoURL) + '" alt="" class="auth-avatar">' : '';
-      el.innerHTML = '<span class="auth-user">' + photo + '<span class="auth-name">' + escapeHtml(name) + '</span></span>' +
+      var name = appUser && appUser.username ? appUser.username : 'ユーザー';
+      var icon = appUser && appUser.iconimgpath ? appUser.iconimgpath : null;
+      var photo = icon ? '<img src="' + escapeHtml(icon) + '" alt="" class="auth-avatar">' : '';
+      var myHref = base + 'mypage/';
+      var adminLink = '';
+      if (appUser && appUser.admin) {
+        adminLink = '<a href="' + base + 'notice-admin/" class="auth-link">管理者</a>';
+      }
+      el.innerHTML = '<a href="' + myHref + '" class="auth-user">' + photo + '<span class="auth-name">' + escapeHtml(name) + '</span></a>' +
+        adminLink +
         '<a href="#" class="auth-link" data-action="logout">ログアウト</a>';
       var logoutBtn = el.querySelector('[data-action="logout"]');
       if (logoutBtn) logoutBtn.addEventListener('click', function(e) { e.preventDefault(); signOut(); });
     } else {
-      el.innerHTML = '<a href="' + base + 'login.html" class="auth-link">ログイン</a>' +
-        '<a href="' + base + 'signup.html" class="auth-link auth-link-primary">新規登録</a>';
+      el.innerHTML = '<a href="' + base + 'login/" class="auth-link">ログイン</a>' +
+        '<a href="' + base + 'signup/" class="auth-link auth-link-primary">新規登録</a>';
     }
   }
 
@@ -97,15 +107,42 @@
     return auth.signInWithPopup(provider);
   }
 
+  function getIdToken(forceRefresh) {
+    var auth = getAuth();
+    if (!auth || !auth.currentUser) return Promise.reject(new Error('No current user'));
+    return auth.currentUser.getIdToken(!!forceRefresh);
+  }
+
+  function syncBackendSession(user) {
+    if (!user) {
+      updateAuthNav(null);
+      return;
+    }
+    if (!window.SpotlightApi || !user.getIdToken) {
+      updateAuthNav(user, null);
+      return;
+    }
+    user.getIdToken().then(function(idToken) {
+      return window.SpotlightApi.fetchJwt(idToken);
+    }).then(function(jwt) {
+      return window.SpotlightApi.fetchUserData(jwt);
+    }).then(function(appUser) {
+      updateAuthNav(user, appUser);
+    }).catch(function(e) {
+      console.warn('Backend sync failed:', e);
+      updateAuthNav(user, null);
+    });
+  }
+
   function getCurrentUser() {
     var auth = getAuth();
     return auth ? auth.currentUser : null;
   }
 
-  // グローバルに公開
   window.SpotlightAuth = {
     init: initFirebase,
     signInWithGoogle: signInWithGoogle,
+    getIdToken: getIdToken,
     signOut: signOut,
     getCurrentUser: getCurrentUser,
     getAuth: getAuth

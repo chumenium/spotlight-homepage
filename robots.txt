@@ -1,2 +1,3 @@
 User-agent: *
-Disallow: /notice-admin.html
+Disallow: /notice-admin/
+Sitemap: https://spotlight-app.click/sitemap.xml

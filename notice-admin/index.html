@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>管理者画面 - スポットライト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../css/common.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/common.js" defer></script>
+  <script src="../js/auth.js" defer></script>
+  <style>
+    .admin-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 120px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .admin-card {
+      background: rgba(26, 26, 46, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(2, 6, 23, 0.6);
+    }
+    .admin-form {
+      display: grid;
+      gap: 16px;
+    }
+    .admin-form label {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .admin-form input,
+    .admin-form select,
+    .admin-form textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      background: rgba(5, 8, 22, 0.9);
+      color: var(--white);
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-button {
+      border-radius: 999px;
+      padding: 12px 20px;
+      border: none;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .admin-note {
+      font-size: 13px;
+      color: var(--light-gray);
+    }
+    .admin-status {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  <div id="header-placeholder"></div>
+
+  <main class="admin-container">
+    <h1 class="section-title fade-in">管理者画面</h1>
+    <p class="fade-in" style="opacity: 0.8; margin-bottom: 30px;">
+      管理者向けの機能をここに集約していきます。
+    </p>
+
+    <div class="admin-card fade-in">
+      <h2 style="font-size: 22px; margin-bottom: 12px;">通知送信</h2>
+      <form class="admin-form" id="adminNoticeForm">
+        <div>
+          <label for="noticeTitle">通知タイトル</label>
+          <input type="text" id="noticeTitle" required>
+        </div>
+        <div>
+          <label for="noticeMessage">通知本文</label>
+          <textarea id="noticeMessage" rows="4" required></textarea>
+        </div>
+        <div>
+          <label for="noticeTarget">送信対象</label>
+          <select id="noticeTarget">
+            <option value="all">全ユーザー</option>
+            <option value="user">特定ユーザー</option>
+          </select>
+        </div>
+        <div id="targetUidWrap" style="display:none;">
+          <label for="targetUid">targetuid（Firebase UID）</label>
+          <input type="text" id="targetUid" placeholder="例: abc123UID">
+        </div>
+        <div class="admin-actions">
+          <button type="submit" class="admin-button">通知を送信</button>
+          <button type="button" class="admin-button secondary" id="setAllTarget">全ユーザーにする</button>
+        </div>
+        <div class="admin-note">targetuid が "all" の場合は全ユーザーへ送信されます。</div>
+        <div id="adminStatus" class="admin-status"></div>
+      </form>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    (function() {
+      var jwt = null;
+      var statusEl = document.getElementById('adminStatus');
+      var form = document.getElementById('adminNoticeForm');
+      var targetSelect = document.getElementById('noticeTarget');
+      var targetWrap = document.getElementById('targetUidWrap');
+      var targetInput = document.getElementById('targetUid');
+      var setAllBtn = document.getElementById('setAllTarget');
+
+      function setStatus(msg, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = msg || '';
+        statusEl.style.color = isError ? '#fca5a5' : 'var(--light-gray)';
+      }
+
+      function toggleTargetInput() {
+        if (targetSelect.value === 'user') {
+          targetWrap.style.display = '';
+          targetInput.required = true;
+        } else {
+          targetWrap.style.display = 'none';
+          targetInput.required = false;
+          targetInput.value = '';
+        }
+      }
+
+      function requireLogin() {
+        window.location.href = '/login/';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.SpotlightAuthEnvError) {
+          setStatus(window.SpotlightAuthEnvError, true);
+          return;
+        }
+
+        toggleTargetInput();
+        targetSelect.addEventListener('change', toggleTargetInput);
+        if (setAllBtn) {
+          setAllBtn.addEventListener('click', function() {
+            targetSelect.value = 'all';
+            toggleTargetInput();
+          });
+        }
+
+        var auth = window.SpotlightAuth && window.SpotlightAuth.getAuth();
+        if (!auth) {
+          requireLogin();
+          return;
+        }
+
+        auth.onAuthStateChanged(function(user) {
+          if (!user) {
+            requireLogin();
+            return;
+          }
+          window.SpotlightAuth.getIdToken().then(function(idToken) {
+            return window.SpotlightApi.fetchJwt(idToken);
+          }).then(function(j) {
+            jwt = j;
+            return window.SpotlightApi.fetchUserData(jwt);
+          }).then(function(appUser) {
+            if (!appUser || !appUser.admin) {
+              setStatus('管理者権限がありません。', true);
+              setTimeout(function() { window.location.href = '/'; }, 1200);
+              return;
+            }
+            setStatus('管理者としてログインしています。');
+          }).catch(function(e) {
+            setStatus(e.message || '認証に失敗しました。', true);
+          });
+        });
+
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          if (!jwt) return;
+          var payload = {
+            title: document.getElementById('noticeTitle').value.trim(),
+            message: document.getElementById('noticeMessage').value.trim(),
+            targetuid: targetSelect.value === 'all' ? 'all' : targetInput.value.trim()
+          };
+          if (!payload.title || !payload.message) {
+            setStatus('タイトルと本文は必須です。', true);
+            return;
+          }
+          if (payload.targetuid !== 'all' && !payload.targetuid) {
+            setStatus('targetuid を入力してください。', true);
+            return;
+          }
+          setStatus('通知を送信しています...');
+          window.SpotlightApi.sendAdminNotification(jwt, payload).then(function() {
+            setStatus('通知を送信しました。');
+            form.reset();
+            toggleTargetInput();
+          }).catch(function(err) {
+            setStatus(err.message || '通知送信に失敗しました。', true);
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
