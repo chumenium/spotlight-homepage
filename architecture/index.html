@@ -199,7 +199,7 @@
         <h2 style="font-size: 32px; margin-bottom: 40px; color: var(--purple);">システム全体構成</h2>
         <div style="font-size: 120px; margin: 40px 0;">📱 → ☁️ → 🗄️</div>
         <p style="font-size: 18px; opacity: 0.9; margin-top: 30px;">
-          Flutterアプリ → Node.js/Express API → PostgreSQL データベース
+          Flutterアプリ → nginx/gunicorn/Flask API → PostgreSQL データベース
         </p>
       </div>
       
@@ -369,8 +369,9 @@
           </div>
         </div>
       </div>
-      
+    
       <!-- データベーススキーマ -->
+       <!--   
       <div class="db-schema fade-in">
         <h2 class="section-title">主要データベーステーブル</h2>
         
@@ -655,7 +656,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> 
+      -->
       
       <!-- インフラ構成 -->
       <div class="fade-in">
