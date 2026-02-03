@@ -102,6 +102,31 @@
       overflow: hidden;
     }
     
+    .install-button.image-button {
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      border-radius: 10px;
+    }
+    
+    .install-button.image-button::before {
+      display: none;
+    }
+    
+    .install-button.image-button img {
+      display: block;
+      height: 76px;
+      width: auto;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .install-button.image-button:hover img {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.35);
+    }
+    
     .install-button.app-store {
       background: linear-gradient(135deg, #007AFF, #0051D5);
     }
@@ -109,6 +134,12 @@
     
     .install-button.play-store {
       background: linear-gradient(135deg, #34A853, #0F9D58);
+    }
+    
+    .install-button.image-button.app-store,
+    .install-button.image-button.play-store {
+      background: transparent;
+      box-shadow: none;
     }
     
     .install-button::before {
@@ -369,9 +400,8 @@
         <h2 class="install-section-title">さぁ、スポットライトをはじめよう</h2>
         <div class="cta-buttons">
           <div class="install-button-wrapper">
-            <a href="https://apps.apple.com/jp/app/%E3%82%B9%E3%83%9D%E3%83%83%E3%83%88%E3%83%A9%E3%82%A4%E3%83%88/id6756017584" class="install-button app-store" target="_blank" rel="noopener noreferrer">
-              <span class="install-icon">🍎</span>
-              <span>iOS版</span>
+            <a href="https://apps.apple.com/jp/app/%E3%82%B9%E3%83%9D%E3%83%83%E3%83%88%E3%83%A9%E3%82%A4%E3%83%88/id6756017584" class="install-button image-button app-store" target="_blank" rel="noopener noreferrer">
+              <img src="picture/app%20store.png" alt="App Storeでダウンロード" loading="lazy">
             </a>
             <div class="install-note">
               <span class="install-note-icon">📱</span>
@@ -379,10 +409,8 @@
             </div>
           </div>
           <div class="install-button-wrapper">
-            <a href="download/spotlight.apk" class="install-button play-store" download="spotlight.apk">
-              <span class="install-icon">🤖</span>
-              <span>Android版APK</span>
-              <span class="beta-badge">BETA</span>
+            <a href="download/spotlight.apk" class="install-button image-button play-store" download="spotlight.apk">
+              <img src="picture/google%20play.png" alt="Android APKをダウンロード" loading="lazy">
             </a>
             <div class="install-note">
               <span class="install-note-icon">📥</span>
