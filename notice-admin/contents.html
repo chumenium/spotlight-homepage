@@ -197,7 +197,7 @@
         window.SpotlightApi.fetchAdminContents(jwt, offset)
           .then(function(contents) {
             renderContents(contents);
-            setStatus('');
+            setStatus(contents && contents.length ? '' : 'コンテンツはまだありません。');
             updatePager(contents && contents.length === pageSize);
           })
           .catch(function(err) {

@@ -147,10 +147,14 @@
   }
 
   function fetchAdminContents(jwt, offset) {
-    return postJson('/api/admin/getcontentsdesclimit10', { offset: offset || 0 }, jwt)
+    var safeOffset = Number(offset) || 0;
+    return postJson('/api/admin/getcontentsdesclimit10', { offset: safeOffset, limit: 10 }, jwt)
       .then(function(res) {
         if (res.status === 200 && res.data && res.data.status === 'success') {
-          var contents = res.data.contents || [];
+          var contents = res.data.contents;
+          if (!Array.isArray(contents)) {
+            throw new Error('コンテンツ一覧の取得に失敗しました（不正なレスポンス）');
+          }
           return contents.map(function(c) {
             return Object.assign({}, c, {
               contentpath: normalizeContentPath(c.contentpath),
