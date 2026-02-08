@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>投稿閲覧 - 管理者 - スポットライト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../css/common.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/common.js" defer></script>
+  <script src="../js/auth.js" defer></script>
+  <style>
+    .admin-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 120px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .admin-card {
+      background: rgba(26, 26, 46, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(2, 6, 23, 0.6);
+    }
+    .content-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: rgba(5, 8, 22, 0.85);
+    }
+    .thumb {
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .content-meta {
+      font-size: 12px;
+      color: var(--light-gray);
+      margin-bottom: 6px;
+    }
+    .content-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .content-links a {
+      color: var(--light-gray);
+      text-decoration: underline;
+      margin-right: 12px;
+    }
+    .pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .admin-button {
+      border-radius: 999px;
+      padding: 10px 16px;
+      border: none;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      min-width: 120px;
+    }
+    .admin-status {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--light-gray);
+    }
+    .link-back {
+      color: var(--light-gray);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  <div id="header-placeholder"></div>
+
+  <main class="admin-container">
+    <h1 class="section-title fade-in">投稿閲覧</h1>
+    <p class="fade-in" style="opacity: 0.8; margin-bottom: 18px;">
+      管理者のみ利用できます。最新10件を降順で表示します。
+    </p>
+    <p><a class="link-back" href="/notice-admin/">← 管理者トップへ戻る</a></p>
+
+    <div class="admin-card fade-in">
+      <div id="contentList" aria-live="polite" style="display: grid; gap: 12px;"></div>
+      <p id="status" class="admin-status">読み込み中...</p>
+      <div class="pager">
+        <button id="prevBtn" class="admin-button" disabled>前の10件</button>
+        <button id="nextBtn" class="admin-button">次の10件</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    (function() {
+      var jwt = null;
+      var statusEl = document.getElementById('status');
+      var listEl = document.getElementById('contentList');
+      var prevBtn = document.getElementById('prevBtn');
+      var nextBtn = document.getElementById('nextBtn');
+      var offset = 0;
+      var pageSize = 10;
+
+      function setStatus(msg, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = msg || '';
+        statusEl.style.color = isError ? '#fca5a5' : 'var(--light-gray)';
+      }
+
+      function renderContents(contents) {
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        if (!contents || contents.length === 0) {
+          listEl.innerHTML = '<div class="content-item">コンテンツが見つかりません。</div>';
+          return;
+        }
+        contents.forEach(function(c) {
+          var item = document.createElement('div');
+          item.className = 'content-item';
+
+          var img = document.createElement('img');
+          img.className = 'thumb';
+          img.src = c.thumbnailpath || '/picture/default-thumb.png';
+          img.alt = c.title || 'thumbnail';
+          img.loading = 'lazy';
+
+          var body = document.createElement('div');
+          var meta = document.createElement('div');
+          meta.className = 'content-meta';
+          meta.textContent = 'ContentID: ' + (c.contentID || '-') + ' / UserID: ' + (c.userID || '-') + ' / Posted: ' + (c.posttimestamp || '-');
+          var title = document.createElement('div');
+          title.className = 'content-title';
+          title.textContent = c.title || '(no title)';
+          var links = document.createElement('div');
+          links.className = 'content-links';
+          if (c.contentpath) {
+            var contentLink = document.createElement('a');
+            contentLink.href = c.contentpath;
+            contentLink.target = '_blank';
+            contentLink.rel = 'noopener noreferrer';
+            contentLink.textContent = 'コンテンツ';
+            links.appendChild(contentLink);
+          }
+          if (c.thumbnailpath) {
+            var thumbLink = document.createElement('a');
+            thumbLink.href = c.thumbnailpath;
+            thumbLink.target = '_blank';
+            thumbLink.rel = 'noopener noreferrer';
+            thumbLink.textContent = 'サムネイル';
+            links.appendChild(thumbLink);
+          }
+          body.appendChild(meta);
+          body.appendChild(title);
+          body.appendChild(links);
+
+          item.appendChild(img);
+          item.appendChild(body);
+          listEl.appendChild(item);
+        });
+      }
+
+      function updatePager(hasNext) {
+        prevBtn.disabled = offset === 0;
+        nextBtn.disabled = !hasNext;
+      }
+
+      function fetchPage() {
+        if (!jwt) return;
+        setStatus('読み込み中...');
+        window.SpotlightApi.fetchAdminContents(jwt, offset)
+          .then(function(contents) {
+            renderContents(contents);
+            setStatus('');
+            updatePager(contents && contents.length === pageSize);
+          })
+          .catch(function(err) {
+            setStatus(err.message || '取得に失敗しました。', true);
+          });
+      }
+
+      function requireLogin() {
+        window.location.href = '/login/';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.SpotlightAuthEnvError) {
+          setStatus(window.SpotlightAuthEnvError, true);
+          return;
+        }
+        var auth = window.SpotlightAuth && window.SpotlightAuth.getAuth();
+        if (!auth) {
+          requireLogin();
+          return;
+        }
+        auth.onAuthStateChanged(function(user) {
+          if (!user) {
+            requireLogin();
+            return;
+          }
+          window.SpotlightAuth.getIdToken()
+            .then(function(idToken) { return window.SpotlightApi.fetchJwt(idToken); })
+            .then(function(j) {
+              jwt = j;
+              return window.SpotlightApi.fetchUserData(jwt);
+            })
+            .then(function(appUser) {
+              if (!appUser || !appUser.admin) {
+                setStatus('管理者権限がありません。', true);
+                setTimeout(function() { window.location.href = '/'; }, 1200);
+                return;
+              }
+              fetchPage();
+            })
+            .catch(function(err) {
+              setStatus(err.message || '認証に失敗しました。', true);
+            });
+        });
+
+        prevBtn.addEventListener('click', function() {
+          if (offset === 0) return;
+          offset = Math.max(0, offset - pageSize);
+          fetchPage();
+        });
+
+        nextBtn.addEventListener('click', function() {
+          offset += pageSize;
+          fetchPage();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -73,6 +73,26 @@
       font-size: 14px;
       color: var(--light-gray);
     }
+    .admin-stats-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .admin-stat-item {
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: rgba(5, 8, 22, 0.85);
+    }
+    .admin-stat-label {
+      font-size: 13px;
+      color: var(--light-gray);
+      margin-bottom: 6px;
+    }
+    .admin-stat-value {
+      font-size: 24px;
+      font-weight: 800;
+    }
   </style>
 </head>
 <body>
@@ -89,6 +109,29 @@
     <p class="fade-in" style="opacity: 0.8; margin-bottom: 30px;">
       管理者向けの機能をここに集約していきます。
     </p>
+
+    <div class="admin-card fade-in">
+      <h2 style="font-size: 22px; margin-bottom: 12px;">統計情報</h2>
+      <p id="statsStatus" class="admin-status" style="margin-top: 4px;">読み込み中...</p>
+      <div class="admin-stats-grid" aria-live="polite">
+        <div class="admin-stat-item">
+          <div class="admin-stat-label">総ユーザー数</div>
+          <div class="admin-stat-value" id="totalUsers">-</div>
+        </div>
+        <div class="admin-stat-item">
+          <div class="admin-stat-label">総コンテンツ数</div>
+          <div class="admin-stat-value" id="totalContents">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card fade-in">
+      <h2 style="font-size: 22px; margin-bottom: 12px;">管理メニュー</h2>
+      <div class="admin-actions">
+        <a class="admin-button" href="/notice-admin/users.html">ユーザー閲覧</a>
+        <a class="admin-button" href="/notice-admin/contents.html">投稿閲覧</a>
+      </div>
+    </div>
 
     <div class="admin-card fade-in">
       <h2 style="font-size: 22px; margin-bottom: 12px;">通知送信</h2>
@@ -133,11 +176,41 @@
       var targetWrap = document.getElementById('targetUidWrap');
       var targetInput = document.getElementById('targetUid');
       var setAllBtn = document.getElementById('setAllTarget');
+      var statsStatusEl = document.getElementById('statsStatus');
+      var totalUsersEl = document.getElementById('totalUsers');
+      var totalContentsEl = document.getElementById('totalContents');
 
       function setStatus(msg, isError) {
         if (!statusEl) return;
         statusEl.textContent = msg || '';
         statusEl.style.color = isError ? '#fca5a5' : 'var(--light-gray)';
+      }
+
+      function setStatsStatus(msg, isError) {
+        if (!statsStatusEl) return;
+        statsStatusEl.textContent = msg || '';
+        statsStatusEl.style.color = isError ? '#fca5a5' : 'var(--light-gray)';
+      }
+
+      function renderStats(stats) {
+        if (!stats) return;
+        var users = stats.total_users;
+        var contents = stats.total_contents;
+        totalUsersEl.textContent = (users || users === 0) ? users.toLocaleString() : '-';
+        totalContentsEl.textContent = (contents || contents === 0) ? contents.toLocaleString() : '-';
+      }
+
+      function fetchStatistics() {
+        if (!jwt) return;
+        setStatsStatus('統計情報を取得しています...');
+        window.SpotlightApi.fetchAdminStatistics(jwt)
+          .then(function(stats) {
+            renderStats(stats);
+            setStatsStatus('');
+          })
+          .catch(function(err) {
+            setStatsStatus(err.message || '統計情報の取得に失敗しました。', true);
+          });
       }
 
       function toggleTargetInput() {
@@ -193,8 +266,10 @@
               return;
             }
             setStatus('管理者としてログインしています。');
+            fetchStatistics();
           }).catch(function(e) {
             setStatus(e.message || '認証に失敗しました。', true);
+            setStatsStatus('認証に失敗したため統計情報を取得できません。', true);
           });
         });
 

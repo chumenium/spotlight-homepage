@@ -126,6 +126,55 @@
       });
   }
 
+  function fetchAdminUsers(jwt, offset) {
+    return postJson('/api/admin/getusersdesclimit10', { offset: offset || 0 }, jwt)
+      .then(function(res) {
+        if (res.status === 200 && res.data && res.data.status === 'success') {
+          var users = res.data.userdatas || [];
+          return users.map(function(u) {
+            var icon = u.iconimgpath ? normalizeIconPath(u.iconimgpath) : null;
+            return Object.assign({}, u, { iconimgpath: icon });
+          });
+        }
+        throw new Error(res.data && res.data.message || 'ユーザー一覧の取得に失敗しました');
+      });
+  }
+
+  function normalizeContentPath(path) {
+    if (!path) return null;
+    if (path.indexOf('http://') === 0 || path.indexOf('https://') === 0) return path;
+    return API_BASE + path;
+  }
+
+  function fetchAdminContents(jwt, offset) {
+    return postJson('/api/admin/getcontentsdesclimit10', { offset: offset || 0 }, jwt)
+      .then(function(res) {
+        if (res.status === 200 && res.data && res.data.status === 'success') {
+          var contents = res.data.contents || [];
+          return contents.map(function(c) {
+            return Object.assign({}, c, {
+              contentpath: normalizeContentPath(c.contentpath),
+              thumbnailpath: normalizeContentPath(c.thumbnailpath)
+            });
+          });
+        }
+        throw new Error(res.data && res.data.message || 'コンテンツ一覧の取得に失敗しました');
+      });
+  }
+
+  function fetchAdminStatistics(jwt) {
+    return postJson('/api/admin/statistics', {}, jwt)
+      .then(function(res) {
+        if (res.status === 200 && res.data && res.data.status === 'success') {
+          return {
+            total_users: res.data.total_users,
+            total_contents: res.data.total_contents
+          };
+        }
+        throw new Error(res.data && res.data.message || '統計情報の取得に失敗しました');
+      });
+  }
+
   function clearSession() {
     clearJwt();
     clearCachedUser();
@@ -146,6 +195,9 @@
     deleteContent: deleteContent,
     deleteAccount: deleteAccount,
     sendAdminNotification: sendAdminNotification,
+    fetchAdminUsers: fetchAdminUsers,
+    fetchAdminContents: fetchAdminContents,
+    fetchAdminStatistics: fetchAdminStatistics,
     clearSession: clearSession
   };
 })();
