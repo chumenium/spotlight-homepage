@@ -215,10 +215,11 @@
   var envErrorMessage = null;
 
   /* ===============================
-   * Auth cache (cost optimization)
+   * Auth cache (safe optimization)
    * =============================== */
   var AUTH_CACHE_KEY = '__spotlight_auth_cache__';
   var AUTH_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+  var backendSyncedThisPage = false; // ★重要
 
   function loadAuthCache() {
     try {
@@ -367,6 +368,7 @@
   function signOut() {
     var auth = getAuth();
     clearAuthCache();
+    backendSyncedThisPage = false;
     if (auth) {
       auth.signOut()
         .then(function() { updateAuthNav(null); })
@@ -389,17 +391,20 @@
   }
 
   /* ===============================
-   * Backend sync (optimized)
+   * Backend sync (fixed)
    * =============================== */
   function syncBackendSession(user) {
     if (!user) {
       clearAuthCache();
+      backendSyncedThisPage = false;
       updateAuthNav(null);
       return;
     }
 
     var cached = loadAuthCache();
-    if (cached && cached.uid === user.uid) {
+
+    // ★ このページで既に同期済み & キャッシュ有効ならAPIを叩かない
+    if (backendSyncedThisPage && cached && cached.uid === user.uid) {
       updateAuthNav(user, cached.appUser);
       return;
     }
@@ -414,6 +419,7 @@
         .then(function(jwt) {
           return window.SpotlightApi.fetchUserData(jwt)
             .then(function(appUser) {
+              backendSyncedThisPage = true;
               saveAuthCache(user.uid, idToken, appUser);
               updateAuthNav(user, appUser);
             });
