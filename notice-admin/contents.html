@@ -184,6 +184,24 @@
           item.appendChild(body);
           listEl.appendChild(item);
         });
+        // ===== 削除ボタンのイベント登録 =====
+        listEl.querySelectorAll('.content-delete').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var id = parseInt(btn.getAttribute('data-id'), 10);
+            deleteSingle(id);
+          });
+        });
+      }
+      function deleteSingle(contentId) {
+        if (!confirm('この投稿を削除します。よろしいですか？')) return;
+        setStatus('削除中...');
+        window.SpotlightApi.deleteContent(jwt, contentId).then(function() {
+          contents = contents.filter(function(c) { return c.contentID !== contentId; });
+          renderContents(contents);
+          setStatus('投稿を削除しました。');
+        }).catch(function(e) {
+          setStatus(e.message || '削除に失敗しました。');
+        });
       }
 
       function updatePager(hasNext) {
