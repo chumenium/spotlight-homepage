@@ -168,8 +168,14 @@
             contentLink.textContent = 'コンテンツ';
             links.appendChild(contentLink);
           }
-          '<button class="content-delete" data-id="' + c.contentID + '">削除</button>';
-
+          if (c.contentID) {
+            var delBtn = document.createElement('button');
+            delBtn.className = 'content-delete';
+            delBtn.dataset.id = c.contentID;
+            delBtn.type = 'button';
+            delBtn.textContent = '削除';
+            links.appendChild(delBtn);
+          }
           body.appendChild(meta);
           body.appendChild(title);
           body.appendChild(links);
