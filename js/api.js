@@ -102,7 +102,6 @@
   }
 
   function deleteContent(jwt, contentID) {
-    console.log('deleteContent', jwt, contentID);
     return postJson('/api/delete/content', { contentID: contentID }, jwt)
       .then(function(res) {
         if (res.status === 200 && res.data && res.data.status === 'success') {

@@ -196,9 +196,7 @@
       function deleteSingle(contentId) {
         if (!confirm('この投稿を削除します。よろしいですか？')) return;
         setStatus('削除中...');
-        console.log('deleteSingle1', jwt, contentId);
         window.SpotlightApi.deleteContent(jwt, contentId).then(function() {
-          console.log('deleteSingle2', jwt, contentId);
           contents = contents.filter(function(c) { return c.contentID !== contentId; });
           renderContents(contents);
           setStatus('投稿を削除しました。');
