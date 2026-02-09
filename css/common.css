@@ -747,3 +747,16 @@ tr:hover {
   color: var(--purple);
 }
 
+/* 通報済みコンテンツ */
+.content-item.reported {
+  background-color: rgba(239, 68, 68, 0.08); /* 薄い赤 */
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.content-item.reported .content-meta {
+  color: #b91c1c;
+}
+
+.content-item.reported .content-title {
+  color: #7f1d1d;
+}

@@ -146,6 +146,10 @@
           var item = document.createElement('div');
           item.className = 'content-item';
 
+          if (c.report === 1) {
+            item.classList.add('reported');
+          }
+
           var img = document.createElement('img');
           img.className = 'thumb';
           img.src = c.thumbnailpath || '/picture/default-thumb.png';
