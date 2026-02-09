@@ -168,14 +168,8 @@
             contentLink.textContent = 'コンテンツ';
             links.appendChild(contentLink);
           }
-          if (c.thumbnailpath) {
-            var thumbLink = document.createElement('a');
-            thumbLink.href = c.thumbnailpath;
-            thumbLink.target = '_blank';
-            thumbLink.rel = 'noopener noreferrer';
-            thumbLink.textContent = 'サムネイル';
-            links.appendChild(thumbLink);
-          }
+          '<button class="content-delete" data-id="' + c.contentID + '">削除</button>';
+
           body.appendChild(meta);
           body.appendChild(title);
           body.appendChild(links);
