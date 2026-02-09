@@ -59,18 +59,25 @@
       });
     });
   }
-
+  
   function fetchJwt(idToken) {
+    var existing = getJwt();
+    if (existing) {
+      return Promise.resolve(existing);
+    }
+  
     return postJson('/api/auth/firebase', { id_token: idToken })
       .then(function(res) {
         if (res.status === 200 && res.data && res.data.status === 'success' && res.data.jwt) {
           setJwt(res.data.jwt);
           return res.data.jwt;
         }
-        throw new Error(res.data && (res.data.message || res.data.error) || 'JWT取得に失敗しました');
+        throw new Error(
+          (res.data && (res.data.message || res.data.error)) ||
+          'JWT取得に失敗しました'
+        );
       });
   }
-
   function fetchUserData(jwt) {
     return postJson('/api/users/getusername', {}, jwt)
       .then(function(res) {
