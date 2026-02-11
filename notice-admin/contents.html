@@ -247,6 +247,7 @@
       function fetchPage() {
         if (!jwt) return;
         setStatus('読み込み中...');
+        console.log('fetchPage-offset:', offset);
         window.SpotlightApi.fetchAdminContents(jwt, offset)
           .then(function(result) {
             contents = result;
