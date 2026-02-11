@@ -163,6 +163,23 @@
           var title = document.createElement('div');
           title.className = 'content-title';
           title.textContent = c.title || '(no title)';
+
+          
+          var commentInfo = document.createElement('div');
+          commentInfo.className = 'content-comments';
+
+          if (c.commentnum && c.commentnum > 0) {
+            var commentLink = document.createElement('a');
+            commentLink.href = '/admin/comments-admin.html?contentID=' + c.contentID;
+            commentLink.textContent = 'コメント数: ' + c.commentnum;
+            commentLink.className = 'comment-link';
+            commentInfo.appendChild(commentLink);
+          } else {
+            commentInfo.textContent = 'コメント数: 0';
+          }
+
+          body.appendChild(commentInfo);
+
           var links = document.createElement('div');
           links.className = 'content-links';
           if (c.contentpath) {
