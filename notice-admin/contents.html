@@ -170,7 +170,7 @@
 
           if (c.commentnum && c.commentnum > 0) {
             var commentLink = document.createElement('a');
-            commentLink.href = '/admin/notice-admin/comments.html?contentID=' + c.contentID;
+            commentLink.href = '/notice-admin/comments.html?contentID=' + c.contentID;
             commentLink.textContent = 'コメント数: ' + c.commentnum;
             commentLink.className = 'comment-link';
             commentInfo.appendChild(commentLink);
