@@ -251,7 +251,6 @@
         window.SpotlightApi.fetchAdminContents(jwt, offset)
           .then(function(result) {
             contents = result;
-            console.log('fetchPage-contents:', contents);
             renderContents(contents);
             setStatus(contents && contents.length ? '' : 'コンテンツはまだありません。');
             updatePager(contents && contents.length === pageSize);
