@@ -186,6 +186,29 @@
       });
   }
 
+  function getContentComments(jwt, contentID) {
+    return postJson('/api/admin/getcontentcomments',
+      { contentID: contentID }, jwt)
+      .then(function(res) {
+        if (res.status === 200 && res.data.status === 'success') {
+          return res.data.data;
+        }
+        throw new Error(res.data.message || 'コメント取得に失敗しました');
+      });
+  }
+  
+  function deleteComment(jwt, contentID, commentID) {
+    return postJson('/api/delete/comment',
+      { contentID: contentID, commentID: commentID }, jwt)
+      .then(function(res) {
+        if (res.status === 200 && res.data.status === 'success') {
+          return true;
+        }
+        throw new Error(res.data.message || 'コメント削除に失敗しました');
+      });
+  }
+  
+
   function clearSession() {
     clearJwt();
     clearCachedUser();
@@ -209,7 +232,9 @@
     fetchAdminUsers: fetchAdminUsers,
     fetchAdminContents: fetchAdminContents,
     fetchAdminStatistics: fetchAdminStatistics,
-    clearSession: clearSession
+    clearSession: clearSession,
+    getContentComments: getContentComments,
+    deleteComment: deleteComment
   };
 })();
 

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ユーザー閲覧 - 管理者 - スポットライト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../css/common.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/common.js" defer></script>
+  <script src="../js/auth.js" defer></script>
+  <style>
+    .admin-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 120px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .admin-card {
+      background: rgba(26, 26, 46, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(2, 6, 23, 0.6);
+    }
+    .list-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .user-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: rgba(5, 8, 22, 0.85);
+    }
+    .user-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(99, 102, 241, 0.4);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .user-id {
+      font-size: 12px;
+      color: var(--light-gray);
+    }
+    .pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .admin-button {
+      border-radius: 999px;
+      padding: 10px 16px;
+      border: none;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      min-width: 120px;
+    }
+    .admin-status {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--light-gray);
+    }
+    .link-back {
+      color: var(--light-gray);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  <div id="header-placeholder"></div>
+
+  <main class="admin-container">
+    <h1 class="section-title fade-in">コメント閲覧</h1>
+    <div class="admin-card">
+        <div id="status" class="admin-status"></div>
+        <div id="commentList" class="comment-list"></div>
+        
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    (function() {
+      'use strict';
+    
+      // ==========================
+      // 状態管理
+      // ==========================
+      var jwt = window.jwt || null;
+      var commentListEl = document.getElementById('commentList');
+      var statusEl = document.getElementById('status');
+      var urlParams = new URLSearchParams(window.location.search);
+      var contentID = parseInt(urlParams.get('contentID'), 10);
+    
+      if (!contentID) {
+        setStatus('contentIDが指定されていません。');
+        return;
+      }
+    
+      // ==========================
+      // 共通ステータス表示
+      // ==========================
+      function setStatus(msg) {
+        if (statusEl) {
+          statusEl.textContent = msg || '';
+        }
+      }
+    
+      // ==========================
+      // 初期ロード
+      // ==========================
+      document.addEventListener('DOMContentLoaded', function() {
+        loadComments();
+      });
+    
+      // ==========================
+      // コメント取得
+      // ==========================
+      function loadComments() {
+        setStatus('コメントを読み込み中...');
+    
+        window.SpotlightApi.getContentComments(jwt, contentID)
+          .then(function(data) {
+            renderComments(data);
+            setStatus('');
+          })
+          .catch(function(e) {
+            setStatus(e.message || 'コメント取得に失敗しました。');
+          });
+      }
+    
+      // ==========================
+      // 再帰描画（スレッド構造）
+      // ==========================
+      function renderComments(comments, parentEl) {
+    
+        if (!parentEl) {
+          parentEl = commentListEl;
+          parentEl.innerHTML = '';
+        }
+    
+        if (!comments || comments.length === 0) {
+          parentEl.innerHTML = '<div>コメントはありません。</div>';
+          return;
+        }
+    
+        comments.forEach(function(c) {
+    
+          var container = document.createElement('div');
+          container.className = 'comment-item';
+          container.dataset.id = c.commentID;
+    
+          // 通報がある場合は赤系表示
+          if (c.report_count && c.report_count > 0) {
+            container.style.backgroundColor = '#ffe6e6';
+          }
+    
+          // メタ情報
+          var meta = document.createElement('div');
+          meta.className = 'comment-meta';
+          meta.textContent =
+            'CommentID: ' + c.commentID +
+            ' / ' + (c.username || '-') +
+            ' / ' + (c.commenttimestamp || '-') +
+            ' / 通報:' + (c.report_count || 0);
+    
+          // 本文
+          var text = document.createElement('div');
+          text.className = 'comment-text';
+          text.textContent = c.commenttext || '';
+    
+          // 削除ボタン
+          var delBtn = document.createElement('button');
+          delBtn.className = 'comment-delete';
+          delBtn.type = 'button';
+          delBtn.textContent = '削除';
+          delBtn.addEventListener('click', function() {
+            deleteSingleComment(c.commentID);
+          });
+    
+          container.appendChild(meta);
+          container.appendChild(text);
+          container.appendChild(delBtn);
+    
+          parentEl.appendChild(container);
+    
+          // 返信がある場合は再帰
+          if (c.replies && c.replies.length > 0) {
+            var replyWrapper = document.createElement('div');
+            replyWrapper.className = 'comment-replies';
+            replyWrapper.style.marginLeft = '20px';
+            replyWrapper.style.marginTop = '8px';
+            container.appendChild(replyWrapper);
+            renderComments(c.replies, replyWrapper);
+          }
+        });
+      }
+    
+      // ==========================
+      // コメント削除
+      // ==========================
+      function deleteSingleComment(commentID) {
+    
+        if (!confirm('このコメントを削除します。よろしいですか？')) return;
+    
+        setStatus('削除中...');
+    
+        window.SpotlightApi.deleteComment(jwt, contentID, commentID)
+          .then(function() {
+    
+            // DOMから即削除
+            var target = document.querySelector('[data-id="' + commentID + '"]');
+            if (target) {
+              target.remove();
+            }
+    
+            setStatus('コメントを削除しました。');
+    
+          })
+          .catch(function(e) {
+            setStatus(e.message || '削除に失敗しました。');
+          });
+      }
+    
+    })();
+    </script>
+  </body>
+</html>
+    
