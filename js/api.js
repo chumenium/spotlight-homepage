@@ -157,9 +157,11 @@
     var safeOffset = Number(offset) || 0;
     return postJson('/api/admin/getcontentsdesclimit10', { offset: safeOffset, limit: 10 }, jwt)
       .then(function(res) {
+        console.log('fetchAdminContents-res:', res);
         if (res.status === 200 && res.data && res.data.status === 'success') {
           var contents = res.data.contents;
           if (!Array.isArray(contents)) {
+            console.log('fetchAdminContents-error:', res.data);
             throw new Error('コンテンツ一覧の取得に失敗しました（不正なレスポンス）');
           }
           return contents.map(function(c) {
