@@ -106,42 +106,26 @@
 
   <script>
     (function() {
-      'use strict';
     
-      var commentListEl = document.getElementById('commentList');
+      var jwt = null;
       var statusEl = document.getElementById('status');
+      var commentListEl = document.getElementById('commentList');
       var urlParams = new URLSearchParams(window.location.search);
       var contentID = parseInt(urlParams.get('contentID'), 10);
-      var jwt = null;
     
-      if (!contentID) {
-        setStatus('contentIDが指定されていません。');
-        return;
+      function setStatus(msg, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = msg || '';
+        statusEl.style.color = isError ? '#fca5a5' : 'var(--light-gray)';
       }
     
-      function setStatus(msg) {
-        if (statusEl) statusEl.textContent = msg || '';
+      function requireLogin() {
+        window.location.href = '/login/';
       }
     
-      // ==========================
-      // Firebase認証完了を待つ
-      // ==========================
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (!user) {
-          setStatus('ログイン情報を確認できません。');
-          return;
-        }
-    
-        user.getIdToken().then(function(token) {
-          jwt = token;
-          loadComments();
-        });
-      });
-    
-      // ==========================
-      // コメント取得
-      // ==========================
       function loadComments() {
+        if (!jwt) return;
+    
         setStatus('コメントを読み込み中...');
     
         window.SpotlightApi.getContentComments(jwt, contentID)
@@ -150,13 +134,10 @@
             setStatus('');
           })
           .catch(function(e) {
-            setStatus(e.message || 'コメント取得に失敗しました。');
+            setStatus(e.message || 'コメント取得に失敗しました。', true);
           });
       }
     
-      // ==========================
-      // 再帰描画
-      // ==========================
       function renderComments(comments, parentEl) {
     
         if (!parentEl) {
@@ -193,7 +174,6 @@
     
           var delBtn = document.createElement('button');
           delBtn.className = 'admin-button';
-          delBtn.type = 'button';
           delBtn.textContent = '削除';
           delBtn.addEventListener('click', function() {
             deleteSingleComment(c.commentID);
@@ -215,9 +195,6 @@
         });
       }
     
-      // ==========================
-      // 削除
-      // ==========================
       function deleteSingleComment(commentID) {
     
         if (!confirm('このコメントを削除します。よろしいですか？')) return;
@@ -226,19 +203,68 @@
     
         window.SpotlightApi.deleteComment(jwt, contentID, commentID)
           .then(function() {
-    
-            var target = document.querySelector('[data-id="' + commentID + '"]');
-            if (target) target.remove();
-    
+            loadComments();
             setStatus('コメントを削除しました。');
           })
           .catch(function(e) {
-            setStatus(e.message || '削除に失敗しました。');
+            setStatus(e.message || '削除に失敗しました。', true);
           });
       }
     
+      document.addEventListener('DOMContentLoaded', function() {
+    
+        if (!contentID) {
+          setStatus('contentIDが指定されていません。', true);
+          return;
+        }
+    
+        if (window.SpotlightAuthEnvError) {
+          setStatus(window.SpotlightAuthEnvError, true);
+          return;
+        }
+    
+        var auth = window.SpotlightAuth && window.SpotlightAuth.getAuth();
+        if (!auth) {
+          requireLogin();
+          return;
+        }
+    
+        auth.onAuthStateChanged(function(user) {
+    
+          if (!user) {
+            requireLogin();
+            return;
+          }
+    
+          window.SpotlightAuth.getIdToken()
+            .then(function(idToken) {
+              return window.SpotlightApi.fetchJwt(idToken);
+            })
+            .then(function(j) {
+              jwt = j;
+              return window.SpotlightApi.fetchUserData(jwt);
+            })
+            .then(function(appUser) {
+    
+              if (!appUser || !appUser.admin) {
+                setStatus('管理者権限がありません。', true);
+                setTimeout(function() { window.location.href = '/'; }, 1200);
+                return;
+              }
+    
+              loadComments();
+            })
+            .catch(function(err) {
+              setStatus(err.message || '認証に失敗しました。', true);
+            });
+    
+        });
+    
+      });
+    
     })();
     </script>
+    
     
   </body>
 </html>
