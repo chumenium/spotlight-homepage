@@ -99,7 +99,6 @@
     <div class="admin-card">
         <div id="status" class="admin-status"></div>
         <div id="commentList" class="comment-list"></div>
-        
     </div>
   </main>
 
@@ -109,34 +108,34 @@
     (function() {
       'use strict';
     
-      // ==========================
-      // 状態管理
-      // ==========================
-      var jwt = window.jwt || null;
       var commentListEl = document.getElementById('commentList');
       var statusEl = document.getElementById('status');
       var urlParams = new URLSearchParams(window.location.search);
       var contentID = parseInt(urlParams.get('contentID'), 10);
+      var jwt = null;
     
       if (!contentID) {
         setStatus('contentIDが指定されていません。');
         return;
       }
     
-      // ==========================
-      // 共通ステータス表示
-      // ==========================
       function setStatus(msg) {
-        if (statusEl) {
-          statusEl.textContent = msg || '';
-        }
+        if (statusEl) statusEl.textContent = msg || '';
       }
     
       // ==========================
-      // 初期ロード
+      // Firebase認証完了を待つ
       // ==========================
-      document.addEventListener('DOMContentLoaded', function() {
-        loadComments();
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (!user) {
+          setStatus('ログイン情報を確認できません。');
+          return;
+        }
+    
+        user.getIdToken().then(function(token) {
+          jwt = token;
+          loadComments();
+        });
       });
     
       // ==========================
@@ -156,7 +155,7 @@
       }
     
       // ==========================
-      // 再帰描画（スレッド構造）
+      // 再帰描画
       // ==========================
       function renderComments(comments, parentEl) {
     
@@ -176,12 +175,10 @@
           container.className = 'comment-item';
           container.dataset.id = c.commentID;
     
-          // 通報がある場合は赤系表示
-          if (c.report_count && c.report_count > 0) {
-            container.style.backgroundColor = '#ffe6e6';
+          if (c.report_count > 0) {
+            container.style.backgroundColor = 'rgba(255,0,0,0.1)';
           }
     
-          // メタ情報
           var meta = document.createElement('div');
           meta.className = 'comment-meta';
           meta.textContent =
@@ -190,14 +187,12 @@
             ' / ' + (c.commenttimestamp || '-') +
             ' / 通報:' + (c.report_count || 0);
     
-          // 本文
           var text = document.createElement('div');
           text.className = 'comment-text';
           text.textContent = c.commenttext || '';
     
-          // 削除ボタン
           var delBtn = document.createElement('button');
-          delBtn.className = 'comment-delete';
+          delBtn.className = 'admin-button';
           delBtn.type = 'button';
           delBtn.textContent = '削除';
           delBtn.addEventListener('click', function() {
@@ -210,10 +205,8 @@
     
           parentEl.appendChild(container);
     
-          // 返信がある場合は再帰
           if (c.replies && c.replies.length > 0) {
             var replyWrapper = document.createElement('div');
-            replyWrapper.className = 'comment-replies';
             replyWrapper.style.marginLeft = '20px';
             replyWrapper.style.marginTop = '8px';
             container.appendChild(replyWrapper);
@@ -223,7 +216,7 @@
       }
     
       // ==========================
-      // コメント削除
+      // 削除
       // ==========================
       function deleteSingleComment(commentID) {
     
@@ -234,14 +227,10 @@
         window.SpotlightApi.deleteComment(jwt, contentID, commentID)
           .then(function() {
     
-            // DOMから即削除
             var target = document.querySelector('[data-id="' + commentID + '"]');
-            if (target) {
-              target.remove();
-            }
+            if (target) target.remove();
     
             setStatus('コメントを削除しました。');
-    
           })
           .catch(function(e) {
             setStatus(e.message || '削除に失敗しました。');
@@ -250,6 +239,7 @@
     
     })();
     </script>
+    
   </body>
 </html>
     
