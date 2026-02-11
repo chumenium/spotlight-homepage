@@ -180,6 +180,18 @@
 
           body.appendChild(commentInfo);
 
+          var reportInfo = document.createElement('div');
+          reportInfo.className = 'content-reports';
+          if (c.report && c.report === 1) {
+            var reportLink = document.createElement('a');
+            reportLink.href = '/notice-admin/report.html?contentID=' + c.contentID;
+            reportLink.textContent = '通報あり';
+            reportLink.className = 'report-link';
+            reportInfo.appendChild(reportLink);
+          } else {
+            reportInfo.textContent = '通報なし';
+          }
+
           var links = document.createElement('div');
           links.className = 'content-links';
           if (c.contentpath) {

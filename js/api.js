@@ -207,6 +207,18 @@
         throw new Error(res.data.message || 'コメント削除に失敗しました');
       });
   }
+
+  // 指定コンテンツの通報一覧取得（管理者用）
+  function getContentReports(jwt, contentID) {
+    return postJson('/api/admin/getcontentreports', { contentID: contentID }, jwt)
+    .then(function(res) {
+      if (res.status === 200 && res.data && res.data.status === 'success') {
+        return res.data.reports;
+      }
+      throw new Error(res.data && res.data.message || '通報取得に失敗しました');
+    })
+  }
+
   
 
   function clearSession() {
@@ -234,7 +246,8 @@
     fetchAdminStatistics: fetchAdminStatistics,
     clearSession: clearSession,
     getContentComments: getContentComments,
-    deleteComment: deleteComment
+    deleteComment: deleteComment,
+    getContentReports: getContentReports
   };
 })();
 

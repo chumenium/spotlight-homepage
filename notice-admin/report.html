@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>通報閲覧 - 管理者 - スポットライト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../css/common.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/common.js" defer></script>
+  <script src="../js/auth.js" defer></script>
+  <style>
+    .admin-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 120px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .admin-card {
+      background: rgba(26, 26, 46, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(2, 6, 23, 0.6);
+    }
+    .list-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .user-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: rgba(5, 8, 22, 0.85);
+    }
+    .user-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(99, 102, 241, 0.4);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .user-id {
+      font-size: 12px;
+      color: var(--light-gray);
+    }
+    .pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .admin-button {
+      border-radius: 999px;
+      padding: 10px 16px;
+      border: none;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      min-width: 120px;
+    }
+    .admin-status {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--light-gray);
+    }
+    .link-back {
+      color: var(--light-gray);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  <div id="header-placeholder"></div>
+
+  <main class="admin-container">
+    <h1 class="section-title fade-in">通報閲覧</h1>
+    <p><a class="link-back" href="/notice-admin/">← 管理者トップへ戻る</a></p>
+    <div class="admin-card">
+        <div id="status" class="status"></div>
+        <div id="reportList" class="reportList"></div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+
+<script>
+(function() {
+
+  var jwt = null;
+  var statusEl = document.getElementById('status');
+  var listEl = document.getElementById('reportList');
+  var urlParams = new URLSearchParams(window.location.search);
+  var contentID = parseInt(urlParams.get('contentID'), 10);
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'red' : '#ccc';
+  }
+
+  function renderReports(reports) {
+    listEl.innerHTML = '';
+
+    if (!reports || reports.length === 0) {
+      listEl.innerHTML = '<div>通報はありません。</div>';
+      return;
+    }
+
+    reports.forEach(function(r) {
+
+      var box = document.createElement('div');
+      box.style.border = '1px solid #444';
+      box.style.padding = '10px';
+      box.style.marginBottom = '10px';
+      box.style.backgroundColor = 'rgba(255,0,0,0.08)';
+
+      box.innerHTML =
+        '<div><strong>ReportID:</strong> ' + r.reportID + '</div>' +
+        '<div><strong>通報者:</strong> ' + r.username + '</div>' +
+        '<div><strong>タイトル:</strong> ' + r.title + '</div>' +
+        '<div><strong>理由:</strong> ' + r.reason + '</div>' +
+        '<div><strong>詳細:</strong> ' + (r.detail || '-') + '</div>' +
+        '<div><strong>日時:</strong> ' + (r.reporttimestamp || '-') + '</div>';
+
+      listEl.appendChild(box);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    if (!contentID) {
+      setStatus('contentIDが指定されていません', true);
+      return;
+    }
+
+    var auth = window.SpotlightAuth.getAuth();
+
+    auth.onAuthStateChanged(function(user) {
+
+      if (!user) {
+        window.location.href = '/login/';
+        return;
+      }
+
+      window.SpotlightAuth.getIdToken()
+        .then(function(idToken) {
+          return window.SpotlightApi.fetchJwt(idToken);
+        })
+        .then(function(j) {
+          jwt = j;
+          return window.SpotlightApi.getContentReports(jwt, contentID);
+        })
+        .then(function(reports) {
+          renderReports(reports);
+        })
+        .catch(function(err) {
+          setStatus(err.message, true);
+        });
+
+    });
+
+  });
+
+})();
+</script>
+
+</body>
+</html>
